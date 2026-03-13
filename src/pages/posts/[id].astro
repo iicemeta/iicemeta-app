@@ -14,7 +14,7 @@ export async function getStaticPaths() {
 }
 
 const { post } = Astro.props;
-const { Content } = await render(post);
+const { Content, headings } = await render(post);
 
 const { title, date, category, tags, readingTime } = post.data;
 
@@ -28,67 +28,136 @@ const formattedDate = date.toLocaleDateString('zh-CN', {
   month: 'long',
   day: 'numeric',
 });
+
+// 过滤出 h2 和 h3 标题用于目录
+const tocHeadings = headings.filter(h => h.depth === 2 || h.depth === 3);
 ---
 
 <BaseLayout title={title} description={post.data.description}>
-  <article class="max-w-3xl mx-auto">
-    {/* 文章头部 */}
-    <header class="mb-12 pb-8 border-b border-[#E8E8E8]">
-      <h1 class="text-3xl md:text-5xl font-serif text-[#1A1A1A] mb-6 leading-tight">
-        {title}
-      </h1>
-      
-      <div class="flex flex-wrap items-center gap-4 text-sm text-[#6B6B6B]">
-        <time datetime={date.toISOString()}>{formattedDate}</time>
-        <span>·</span>
-        <a href={`/categories?category=${encodeURIComponent(category)}`} class="hover:text-[#E74C3C] transition-colors">
-          {category}
-        </a>
-        {readingTime && (
-          <>
-            <span>·</span>
-            <span>{readingTime}</span>
-          </>
-        )}
-      </div>
-      
-      {tags.length > 0 && (
-        <div class="flex gap-2 flex-wrap mt-6">
-          {tags.map(tag => (
-            <a 
-              href={`/tags#${tag}`}
-              class="text-xs px-3 py-1 bg-[#E8E8E8] text-[#6B6B6B] rounded-full hover:bg-[#1A1A1A] hover:text-white transition-colors duration-300"
-            >
-              {tag}
-            </a>
-          ))}
+  <div class="flex gap-8 xl:gap-12 max-w-5xl mx-auto">
+    {/* 文章主体 */}
+    <article class="flex-1 min-w-0">
+      {/* 文章头部 */}
+      <header class="mb-12 pb-8 border-b border-[#E8E8E8]">
+        <h1 class="text-3xl md:text-5xl font-serif text-[#1A1A1A] mb-6 leading-tight">
+          {title}
+        </h1>
+        
+        <div class="flex flex-wrap items-center gap-4 text-sm text-[#6B6B6B]">
+          <time datetime={date.toISOString()}>{formattedDate}</time>
+          <span>·</span>
+          <a href={`/categories?category=${encodeURIComponent(category)}`} class="hover:text-[#E74C3C] transition-colors">
+            {category}
+          </a>
+          {readingTime && (
+            <>
+              <span>·</span>
+              <span>{readingTime}</span>
+            </>
+          )}
         </div>
-      )}
-    </header>
-    
-    {/* 文章内容 */}
-    <div class="prose prose-lg max-w-none prose-headings:font-serif prose-headings:text-[#1A1A1A] prose-p:text-[#1A1A1A] prose-a:text-[#E74C3C] prose-a:no-underline hover:prose-a:underline prose-strong:text-[#1A1A1A] prose-code:text-[#E74C3C] prose-pre:bg-[#F5F5F5] prose-pre:text-[#1A1A1A]">
-      <Content components={components} />
-    </div>
+        
+        {tags.length > 0 && (
+          <div class="flex gap-2 flex-wrap mt-6">
+            {tags.map(tag => (
+              <a 
+                href={`/tags#${tag}`}
+                class="text-xs px-3 py-1 bg-[#E8E8E8] text-[#6B6B6B] rounded-full hover:bg-[#1A1A1A] hover:text-white transition-colors duration-300"
+              >
+                {tag}
+              </a>
+            ))}
+          </div>
+        )}
+      </header>
+      
+      {/* 文章内容 */}
+      <div class="prose prose-lg max-w-none prose-headings:font-serif prose-headings:text-[#1A1A1A] prose-p:text-[#1A1A1A] prose-a:text-[#E74C3C] prose-a:no-underline hover:prose-a:underline prose-strong:text-[#1A1A1A] prose-code:text-[#E74C3C] prose-pre:bg-[#F5F5F5] prose-pre:text-[#1A1A1A]">
+        <Content components={components} />
+      </div>
 
-    {/* CC 许可证 */}
-    <CCLicense
-      title={title}
-      author={siteConfig.author.name}
-      date={date}
-      license={siteConfig.license.default}
-      licenseVersion={siteConfig.license.version}
-    />
+      {/* CC 许可证 */}
+      <CCLicense
+        title={title}
+        author={siteConfig.author.name}
+        date={date}
+        license={siteConfig.license.default}
+        licenseVersion={siteConfig.license.version}
+      />
 
-    {/* 文章底部导航 */}
-    <footer class="mt-16 pt-8 border-t border-[#E8E8E8]">
-      <a 
-        href="/"
-        class="inline-flex items-center gap-2 text-[#6B6B6B] hover:text-[#1A1A1A] transition-all duration-300 hover:translate-x-1"
-      >
-        <span>←</span>
-        <span>返回首页</span>
-      </a>
-    </footer>
-  </article>
+      {/* 文章底部导航 */}
+      <footer class="mt-16 pt-8 border-t border-[#E8E8E8]">
+        <a 
+          href="/"
+          class="inline-flex items-center gap-2 text-[#6B6B6B] hover:text-[#1A1A1A] transition-all duration-300 hover:translate-x-1"
+        >
+          <span>←</span>
+          <span>返回首页</span>
+        </a>
+      </footer>
+    </article>
+
+    {/* 右侧目录 */}
+    {tocHeadings.length > 0 && (
+      <aside class="hidden lg:block w-64 flex-shrink-0">
+        <div class="sticky top-24">
+          <h3 class="text-sm font-medium text-[#1A1A1A] mb-4 tracking-wide">目录</h3>
+          <nav class="toc-nav">
+            <ul class="space-y-2">
+              {tocHeadings.map(heading => (
+                <li class={`${heading.depth === 3 ? 'pl-4' : ''}`}>
+                  <a 
+                    href={`#${heading.slug}`}
+                    class={`block text-sm transition-colors duration-200 hover:text-[#E74C3C] ${
+                      heading.depth === 3 ? 'text-[#9B9B9B]' : 'text-[#6B6B6B]'
+                    }`}
+                    data-heading-slug={heading.slug}
+                  >
+                    {heading.text}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </div>
+      </aside>
+    )}
+  </div>
 </BaseLayout>
+
+<script>
+  // 目录高亮当前阅读位置
+  document.addEventListener('DOMContentLoaded', () => {
+    const headings = document.querySelectorAll('article h2[id], article h3[id]');
+    const tocLinks = document.querySelectorAll('.toc-nav a');
+    
+    if (headings.length === 0 || tocLinks.length === 0) return;
+    
+    const observerOptions = {
+      rootMargin: '-80px 0px -60% 0px',
+      threshold: 0
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const slug = entry.target.id;
+          tocLinks.forEach(link => {
+            if (link.getAttribute('href') === `#${slug}`) {
+              link.classList.add('text-[#E74C3C]', 'font-medium');
+              link.classList.remove('text-[#6B6B6B]', 'text-[#9B9B9B]');
+            } else {
+              link.classList.remove('text-[#E74C3C]', 'font-medium');
+              const htmlLink = link as HTMLElement;
+              const headingSlug = htmlLink.dataset.headingSlug;
+              const isH3 = headingSlug && document.querySelector(`[id="${headingSlug}"]`)?.tagName === 'H3';
+              link.classList.add(isH3 ? 'text-[#9B9B9B]' : 'text-[#6B6B6B]');
+            }
+          });
+        }
+      });
+    }, observerOptions);
+    
+    headings.forEach(heading => observer.observe(heading));
+  });
+</script>
