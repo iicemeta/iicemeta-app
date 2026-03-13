@@ -1,0 +1,111 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PhotoCard from '../../components/PhotoCard.astro';
+
+const photos = await getCollection('photos');
+
+// 按日期倒序
+const sortedPhotos = photos.sort((a, b) => 
+  new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+);
+
+// 为每张卡片生成随机旋转角度
+const photosWithRotation = sortedPhotos.map(photo => ({
+  ...photo,
+  rotation: (Math.random() - 0.5) * 4, // -2 到 2 度
+}));
+
+// 统计
+const totalPhotos = photos.length;
+const uniqueLocations = new Set(photos.map(p => p.data.location).filter(Boolean)).size;
+const uniqueTags = new Set(photos.flatMap(p => p.data.tags)).size;
+---
+
+<BaseLayout title="影集" description="每一张照片，都是一个故事">
+  <!-- 头部区域 -->
+  <header class="mb-16 md:mb-24">
+    <div class="flex flex-col md:flex-row gap-8 md:gap-16 items-start">
+      <!-- 左侧文案 -->
+      <div class="w-full md:w-1/2">
+        <h1 class="text-5xl md:text-7xl font-serif font-black leading-[0.95] mb-6">
+          别让时间<br>
+          偷走你的<br>
+          <span class="text-[#E74C3C] italic">瞬间。</span>
+        </h1>
+        <p class="text-lg text-[#6B6B6B] leading-relaxed max-w-md">
+          这里没有智能分类，没有自动增强。
+          只有被我亲手留下的瞬间。
+          真实的颗粒感，比滤镜更动人。
+        </p>
+      </div>
+      
+      <!-- 右侧统计 -->
+      <div class="w-full md:w-1/2 md:pt-8">
+        <div class="grid grid-cols-3 gap-4">
+          <div class="border border-[#E8E8E8] p-4 rounded-lg text-center">
+            <span class="block text-3xl font-bold text-[#1A1A1A] mb-1">{totalPhotos}</span>
+            <span class="text-xs text-[#6B6B6B] uppercase tracking-wider">个故事</span>
+          </div>
+          <div class="border border-[#E8E8E8] p-4 rounded-lg text-center">
+            <span class="block text-3xl font-bold text-[#1A1A1A] mb-1">{uniqueLocations}</span>
+            <span class="text-xs text-[#6B6B6B] uppercase tracking-wider">个地点</span>
+          </div>
+          <div class="border border-[#E8E8E8] p-4 rounded-lg text-center">
+            <span class="block text-3xl font-bold text-[#1A1A1A] mb-1">{uniqueTags}</span>
+            <span class="text-xs text-[#6B6B6B] uppercase tracking-wider">个标签</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- 照片网格 -->
+  <main class="asymmetric-grid">
+    {photosWithRotation.map((photo, index) => (
+      <div class={`photo-wrapper ${index % 3 === 1 ? 'offset-up' : ''} ${index % 3 === 2 ? 'offset-down' : ''}`}>
+        <PhotoCard photo={photo} rotation={photo.rotation} />
+      </div>
+    ))}
+  </main>
+
+  <!-- 空状态 -->
+  {photos.length === 0 && (
+    <div class="text-center py-24">
+      <p class="text-2xl text-[#6B6B6B] mb-4">还没有照片</p>
+      <p class="text-sm text-[#9B9B9B]">在 src/content/photos/ 中添加你的第一个照片故事吧</p>
+    </div>
+  )}
+</BaseLayout>
+
+<style>
+  /* 不对称网格 */
+  .asymmetric-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr 1.1fr;
+    gap: 2.5rem;
+  }
+
+  @media (max-width: 768px) {
+    .asymmetric-grid {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+  }
+
+  /* 偏移类 */
+  .photo-wrapper.offset-up {
+    margin-top: -2rem;
+  }
+  
+  .photo-wrapper.offset-down {
+    margin-top: 3rem;
+  }
+
+  @media (max-width: 768px) {
+    .photo-wrapper.offset-up,
+    .photo-wrapper.offset-down {
+      margin-top: 0;
+    }
+  }
+</style>

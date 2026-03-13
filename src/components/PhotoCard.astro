@@ -1,0 +1,97 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  photo: CollectionEntry<'photos'>;
+  rotation?: number;
+}
+
+const { photo, rotation = 0 } = Astro.props;
+const { title, date, location, mood, cover } = photo.data;
+
+// 情绪颜色映射
+const moodColors: Record<string, string> = {
+  joy: '#FCD34D',      // 暖黄
+  calm: '#93C5FD',     // 淡蓝
+  nostalgic: '#C4B5FD', // 淡紫
+  melancholy: '#9CA3AF', // 灰
+  excited: '#FCA5A5',  // 粉红
+  peaceful: '#86EFAC', // 淡绿
+};
+
+const moodLabels: Record<string, string> = {
+  joy: '喜悦',
+  calm: '宁静',
+  nostalgic: '怀旧',
+  melancholy: '忧郁',
+  excited: '兴奋',
+  peaceful: '平和',
+};
+
+const formattedDate = new Date(date).toLocaleDateString('zh-CN', {
+  year: 'numeric',
+  month: 'short',
+  day: 'numeric',
+});
+---
+
+<article 
+  class="photo-card group relative"
+  style={`transform: rotate(${rotation}deg)`}
+  data-mood={mood}
+>
+  <!-- 情绪色条 -->
+  <div 
+    class="h-1 w-full mb-3 rounded-full transition-all group-hover:h-2"
+    style={`background-color: ${moodColors[mood]}`}
+  />
+  
+  <!-- 图片容器 -->
+  <a href={`/photos/${photo.id}`} class="block overflow-hidden bg-[#1a1a1a] rounded-sm relative">
+    <img 
+      src={cover} 
+      alt={title}
+      class="w-full aspect-[4/5] object-cover opacity-90 group-hover:opacity-100 transition-all duration-700 group-hover:scale-105"
+    />
+    
+    <!-- 悬停遮罩 -->
+    <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-500 flex items-center justify-center opacity-0 group-hover:opacity-100">
+      <span class="text-white text-sm font-medium px-4 py-2 border border-white/50 rounded-full backdrop-blur-sm">
+        阅读故事
+      </span>
+    </div>
+  </a>
+  
+  <!-- 信息区 -->
+  <div class="mt-4 flex justify-between items-start">
+    <div>
+      <h3 class="font-serif font-bold text-lg text-[#1A1A1A] group-hover:text-[#E74C3C] transition-colors">
+        {title}
+      </h3>
+      <p class="text-sm text-[#6B6B6B] mt-1">
+        {formattedDate}
+        {location && <span class="mx-1">·</span>}
+        {location}
+      </p>
+    </div>
+    
+    <!-- 情绪标签 -->
+    <span 
+      class="text-xs px-2 py-1 rounded-full border"
+      style={`border-color: ${moodColors[mood]}40; color: ${moodColors[mood]}; background-color: ${moodColors[mood]}15`}
+    >
+      {moodLabels[mood]}
+    </span>
+  </div>
+</article>
+
+<style>
+  .photo-card {
+    transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  
+  .photo-card:hover {
+    transform: rotate(0deg) scale(1.02) !important;
+    z-index: 10;
+  }
+</style>

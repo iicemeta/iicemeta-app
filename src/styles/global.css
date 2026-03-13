@@ -168,3 +168,26 @@ img {
   overflow-wrap: break-word;
   word-wrap: break-word;
 }
+
+/* 影集页面样式 */
+.photo-card {
+  transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.photo-card:hover {
+  transform: rotate(0deg) scale(1.02) !important;
+  z-index: 10;
+}
+
+/* 故事内容样式 */
+.prose blockquote {
+  border-left: 3px solid #E74C3C;
+  padding-left: 1rem;
+  font-style: italic;
+  color: #6B6B6B;
+}
+
+.prose p {
+  margin-bottom: 1rem;
+  line-height: 1.8;
+}

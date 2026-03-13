@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>乱序美学 - 你的私人影集</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=ZCOOL+XiaoWei&display=swap');
+
+        :root {
+            --bg-base: #121210;
+            --accent: #E2FF45;
+            --text-main: #F2F2F2;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            font-family: 'Noto Serif SC', serif;
+            /* 噪点纹理叠加 */
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3%3Ffilter id='noiseFilter'%3E%3FfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            background-blend-mode: overlay;
+        }
+
+        .custom-ease {
+            transition-timing-function: cubic-bezier(0.87, 0, 0.13, 1);
+        }
+
+        .photo-card {
+            transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .photo-card:hover {
+            transform: scale(1.02) rotate(1deg);
+            z-index: 10;
+        }
+
+        .grain-overlay {
+            pointer-events: none;
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(rgba(18,18,16,0), rgba(18,18,16,0.2));
+        }
+
+        /* 不对称网格微调 */
+        .asymmetric-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr 1.1fr;
+            gap: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .asymmetric-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body class="p-6 md:p-12 overflow-x-hidden">
+
+    <!-- 导航：拒绝居中 -->
+    <nav class="flex justify-between items-end mb-24 border-b border-white/10 pb-4">
+        <div>
+            <h1 class="text-4xl font-bold tracking-tighter" style="font-family: 'ZCOOL XiaoWei', serif;">
+                乱序记录 <span class="text-xs font-normal opacity-50 ml-2">VER 0.1</span>
+            </h1>
+            <p class="text-sm mt-2 opacity-70">这不是什么云端影集，这是我的瞬间。</p>
+        </div>
+        <div class="flex gap-8 items-center">
+            <a href="#" class="hover:text-[var(--accent)] custom-ease transition-colors text-sm underline decoration-wavy">还没想好放啥</a>
+            <button class="bg-[var(--accent)] text-black px-5 py-2 rounded-full font-bold flex items-center gap-2 hover:translate-y-[-2px] active:translate-y-[0] transition-transform">
+                <span class="iconify" data-icon="ph:camera-bold"></span>
+                随便塞一张
+            </button>
+        </div>
+    </nav>
+
+    <!-- 英雄区：不对称文案与巨型图像 -->
+    <header class="flex flex-col md:flex-row gap-12 items-start mb-40">
+        <div class="w-full md:w-5/12 order-2 md:order-1">
+            <div class="relative group">
+                <div class="absolute -inset-2 bg-[var(--accent)] opacity-20 blur-xl group-hover:opacity-40 transition-opacity"></div>
+                <img src="https://picsum.photos/id/10/800/1000" alt="封面图" class="w-full grayscale hover:grayscale-0 transition-all duration-700 rounded-sm">
+                <div class="absolute bottom-4 left-4 bg-black/80 px-4 py-2 text-xs backdrop-blur-md border border-white/10">
+                    摄于 2024年3月，那天雨很大。
+                </div>
+            </div>
+        </div>
+        <div class="w-full md:w-7/12 order-1 md:order-2 md:pt-20">
+            <h2 class="text-6xl md:text-8xl font-black leading-[0.9] mb-8">
+                别让算法<br>定义你的<br><span class="italic text-[var(--accent)]">记忆。</span>
+            </h2>
+            <p class="text-xl max-w-md opacity-80 leading-relaxed mb-8">
+                这里没有智能分类，没有自动增强。<br>
+                只有 427 张被我亲手留下的瞬间。<br>
+                真实的颗粒感，比滤镜更动人。
+            </p>
+            <div class="flex gap-4">
+                <div class="border border-white/20 p-4 rounded-lg flex-1">
+                    <span class="block text-3xl font-bold mb-1">12</span>
+                    <span class="text-xs opacity-50 uppercase tracking-widest">个未分类卷轴</span>
+                </div>
+                <div class="border border-white/20 p-4 rounded-lg flex-1">
+                    <span class="block text-3xl font-bold mb-1">2.1k</span>
+                    <span class="text-xs opacity-50 uppercase tracking-widest">次心动瞬间</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 乱序网格 -->
+    <main class="asymmetric-grid">
+        <!-- 卡片 1 -->
+        <div class="photo-card relative group mt-10">
+            <div class="overflow-hidden bg-[#1a1a1a]">
+                <img src="https://picsum.photos/id/42/600/800" class="w-full opacity-80 group-hover:opacity-100 transition-opacity">
+            </div>
+            <div class="mt-4 flex justify-between items-start">
+                <div>
+                    <h3 class="font-bold">街角的旧书摊</h3>
+                    <p class="text-sm opacity-50 italic">那是下午4点的光芒</p>
+                </div>
+                <span class="iconify text-xl" data-icon="ph:heart-straight-light"></span>
+            </div>
+        </div>
+
+        <!-- 卡片 2：偏移位 -->
+        <div class="photo-card relative group -mt-16">
+            <div class="overflow-hidden bg-[#1a1a1a] p-4 border border-white/5">
+                <img src="https://picsum.photos/id/56/600/400" class="w-full grayscale hover:grayscale-0 transition-all duration-1000">
+                <p class="text-[10px] mt-4 opacity-30 font-mono">FILE_DSC_0921.RAW</p>
+            </div>
+            <div class="mt-4">
+                <h3 class="font-bold">失焦的咖啡</h3>
+                <p class="text-sm opacity-50">别问，问就是意境。</p>
+            </div>
+        </div>
+
+        <!-- 卡片 3 -->
+        <div class="photo-card relative group mt-20">
+            <div class="overflow-hidden bg-[#1a1a1a]">
+                <img src="https://picsum.photos/id/64/600/900" class="w-full">
+            </div>
+            <div class="mt-4">
+                <h3 class="font-bold">凌晨三点的城市</h3>
+                <p class="text-sm opacity-50">只有猫和路灯醒着。</p>
+            </div>
+        </div>
+
+        <!-- 卡片 4：跨列效果 -->
+        <div class="photo-card relative group md:col-span-2 mt-4">
+            <div class="overflow-hidden aspect-video">
+                <img src="https://picsum.photos/id/111/1200/600" class="w-full object-cover">
+            </div>
+            <div class="mt-4 flex items-center gap-6">
+                <h3 class="text-2xl font-bold">海边的尽头是什么？</h3>
+                <div class="h-[1px] flex-grow bg-white/20"></div>
+                <button class="text-[var(--accent)] text-sm font-mono hover:tracking-widest transition-all">READ MORE</button>
+            </div>
+        </div>
+
+        <!-- 卡片 5 -->
+        <div class="photo-card relative group -mt-8">
+            <div class="aspect-square bg-[var(--accent)] flex items-center justify-center p-8">
+                <p class="text-black text-2xl font-bold leading-tight">
+                    "照片是用来回忆的，<br>不是用来占内存的。"
+                </p>
+            </div>
+        </div>
+    </main>
+
+    <!-- 底部：不要常规 -->
+    <footer class="mt-40 border-t border-white/10 pt-12 pb-24 flex flex-col md:flex-row justify-between gap-12">
+        <div class="max-w-sm">
+            <p class="text-2xl mb-4 font-bold">
+                还没看够？那也没办法。
+            </p>
+            <p class="opacity-50 text-sm">
+                这个网站没有 Cookie，没有追踪器。我连你谁都不知道。
+            </p>
+        </div>
+        <div class="flex flex-col items-end gap-2">
+            <div class="flex gap-4 mb-4">
+                <a href="#" class="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center hover:bg-white hover:text-black transition-all">
+                    <span class="iconify" data-icon="ph:instagram-logo"></span>
+                </a>
+                <a href="#" class="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center hover:bg-white hover:text-black transition-all">
+                    <span class="iconify" data-icon="ph:twitter-logo"></span>
+                </a>
+            </div>
+            <p class="text-[10px] font-mono opacity-20 uppercase tracking-[0.3em]">Built with disdain for standard templates</p>
+        </div>
+    </footer>
+
+    <!-- 简单的浮动交互：不叫 Alert 的消息框 -->
+    <div id="toast" class="fixed bottom-8 right-8 bg-white text-black p-4 rounded-sm shadow-2xl translate-y-20 opacity-0 transition-all duration-500 z-50 flex items-center gap-3">
+        <span class="iconify text-xl" data-icon="ph:check-circle-fill"></span>
+        <span id="toast-msg" class="text-sm font-bold">操作成功了，大概。</span>
+    </div>
+
+    <script>
+        // 模拟一些非线性的交互
+        document.querySelectorAll('.photo-card').forEach(card => {
+            card.addEventListener('click', () => {
+                showToast("这张图我也挺喜欢的。");
+            });
+        });
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toast-msg');
+            toastMsg.innerText = msg;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        // 随机旋转网格元素，增加乱序感
+        window.addEventListener('load', () => {
+            document.querySelectorAll('.photo-card').forEach((card, index) => {
+                const rotation = (Math.random() - 0.5) * 4; // -2 to 2 degrees
+                card.style.transform = `rotate(${rotation}deg)`;
+            });
+        });
+    </script>
+</body>
+</html>
