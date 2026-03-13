@@ -10,7 +10,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "newpost": "node scripts/newpost.js"
+    "newpost": "node scripts/newpost.js",
+    "pages:deploy": "pnpm run build && wrangler pages deploy ./dist --project-name=iicemeta-app --branch=master"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.7",
