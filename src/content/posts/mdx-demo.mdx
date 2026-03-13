@@ -1,0 +1,56 @@
+---
+title: MDX 演示 - 在文章中嵌入组件
+date: 2026-03-13
+category: 技术
+tags: [MDX, React, 组件]
+description: 展示如何在文章中使用 React 组件，让内容更生动。
+readingTime: 3分钟
+---
+
+import { Icon } from 'astro-icon/components';
+
+# MDX 让文章活起来
+
+这是一篇 **MDX** 示例文章。不同于普通 Markdown，MDX 允许你在文章中直接使用 React 组件。
+
+## 嵌入图标
+
+下面是一个动态图标：
+
+<div class="flex items-center gap-4 p-4 bg-stone-100 rounded-lg my-6">
+  <Icon name="simple-icons:github" class="w-8 h-8 text-stone-700" />
+  <span class="text-stone-600">这是 GitHub 图标，来自 Iconify</span>
+</div>
+
+## 交互式提示框
+
+<div class="my-6 p-6 bg-gradient-to-br from-rose-50 to-orange-50 border-l-4 border-rose-400 rounded-r-lg">
+  <h4 class="text-rose-700 font-bold mb-2 flex items-center gap-2">
+    <Icon name="lucide:lightbulb" class="w-5 h-5" />
+    小提示
+  </h4>
+  <p class="text-stone-700 m-0">
+    MDX 的强大之处在于你可以创建任何你想要的组件。图表、代码编辑器、交互式演示... 一切皆有可能。
+  </p>
+</div>
+
+## 代码示例
+
+```tsx
+// 你可以在 MDX 中导入组件
+import { MyComponent } from '../components/MyComponent';
+
+// 然后在正文中使用
+<MyComponent />
+```
+
+## 结语
+
+MDX 打破了内容与代码的边界。你可以：
+
+- ✦ 嵌入动态图表
+- ✦ 创建交互式演示
+- ✦ 复用设计系统中的组件
+- ✦ 让技术文章更有表现力
+
+开始尝试吧！

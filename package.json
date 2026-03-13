@@ -12,7 +12,9 @@
     "astro": "astro"
   },
   "dependencies": {
+    "@astrojs/mdx": "^5.0.0",
     "@astrojs/react": "^5.0.0",
+    "@iconify-json/lucide": "^1.2.97",
     "@iconify-json/simple-icons": "^1.2.73",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
