@@ -27,8 +27,8 @@ function getFirstLetter(str: string): string {
   
   // 如果是中文，获取拼音首字母
   if (/^[\u4e00-\u9fa5]$/.test(firstChar)) {
-    const py = pinyin(firstChar, { toneType: 'none', type: 'first' });
-    return py.charAt(0).toUpperCase();
+    const result = pinyin(firstChar, { toneType: 'none', type: 'all' });
+    return result[0]?.first?.toUpperCase() || '#';
   }
   
   // 其他字符归到 # 组
