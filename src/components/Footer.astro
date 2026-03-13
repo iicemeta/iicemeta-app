@@ -2,7 +2,7 @@
 import { siteConfig } from '../site.config';
 import { Icon } from 'astro-icon/components';
 
-const { footer, theme } = siteConfig;
+const { footer, theme, socialLinks } = siteConfig;
 ---
 
 {footer.enabled && (
@@ -43,9 +43,9 @@ const { footer, theme } = siteConfig;
       )}
       
       <!-- 社交图标 -->
-      {footer.socialLinks && footer.socialLinks.length > 0 && (
+      {socialLinks && socialLinks.length > 0 && (
         <div class="flex justify-center gap-4 mb-6">
-          {footer.socialLinks.map(link => (
+          {socialLinks.map(link => (
             <a
               href={link.href}
               target="_blank"

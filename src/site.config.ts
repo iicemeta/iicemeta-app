@@ -18,9 +18,14 @@ export const siteConfig = {
   author: {
     name: 'iicemeta',
     email: 'me@iicemeta.com',
-    github: 'https://github.com/iicemeta',
-    twitter: 'https://x.com/iicemeta',
   },
+
+  // 社交链接配置（全局统一）
+  socialLinks: [
+    { name: 'GitHub', href: 'https://github.com/iicemeta', icon: 'simple-icons:github' },
+    { name: 'Twitter', href: 'https://x.com/iicemeta', icon: 'simple-icons:x' },
+    { name: 'Email', href: 'mailto:me@iicemeta.com', icon: 'simple-icons:gmail' },
+  ],
 
   // 导航配置
   navbar: {
@@ -55,12 +60,6 @@ export const siteConfig = {
       //     { label: 'Twitter', href: 'https://twitter.com' },
       //   ],
       // },
-    ],
-    // 社交图标链接配置
-    socialLinks: [
-      { name: 'GitHub', href: 'https://github.com/iicemeta', icon: 'simple-icons:github' },
-      { name: 'Twitter', href: 'https://x.com/iicemeta', icon: 'simple-icons:x' },
-      { name: 'Email', href: 'mailto:me@iicemeta.com', icon: 'simple-icons:gmail' },
     ],
     // 是否显示页脚
     enabled: true,
