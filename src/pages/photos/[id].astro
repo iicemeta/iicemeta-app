@@ -56,7 +56,14 @@ const formattedDate = new Date(date).toLocaleDateString('zh-CN', {
 });
 ---
 
-<BaseLayout title={title} description={`${title} - 拍摄于 ${location || '未知地点'}`}>
+<BaseLayout 
+  title={title} 
+  description={`${title} - 拍摄于 ${location || '未知地点'}`}
+  type="article"
+  publishDate={new Date(date)}
+  image={cover}
+  tags={tags}
+>
   <article class="max-w-4xl mx-auto">
     <!-- 返回链接 -->
     <a 

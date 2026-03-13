@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://www.iicemeta.com/sitemap.xml
+
+# 禁止爬虫访问的路径（如果有）
+# Disallow: /admin/
+# Disallow: /private/
