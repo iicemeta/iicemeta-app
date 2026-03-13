@@ -1,0 +1,78 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PostCard from '../components/PostCard.astro';
+import { getCollection } from 'astro:content';
+
+const posts = await getCollection('posts');
+
+// 按标签分组
+const postsByTag = posts.reduce((acc, post) => {
+  post.data.tags.forEach(tag => {
+    if (!acc[tag]) {
+      acc[tag] = [];
+    }
+    acc[tag].push(post);
+  });
+  return acc;
+}, {} as Record<string, typeof posts>);
+
+// 计算标签大小
+const maxCount = Math.max(...Object.values(postsByTag).map(p => p.length));
+const minCount = Math.min(...Object.values(postsByTag).map(p => p.length));
+
+const getTagSize = (count: number) => {
+  if (maxCount === minCount) return 'text-base';
+  const ratio = (count - minCount) / (maxCount - minCount);
+  if (ratio > 0.7) return 'text-2xl';
+  if (ratio > 0.4) return 'text-xl';
+  return 'text-base';
+};
+
+// 获取当前选中的标签
+const currentTag = Astro.url.hash.slice(1) || Object.keys(postsByTag)[0];
+const currentPosts = postsByTag[currentTag] || [];
+---
+
+<BaseLayout title="标签">
+  <div class="max-w-6xl mx-auto">
+    <h1 class="text-4xl md:text-5xl font-serif text-[#1A1A1A] mb-12">
+      标签
+    </h1>
+    
+    {/* 标签云 */}
+    <section class="mb-16">
+      <div class="flex flex-wrap gap-4 items-baseline">
+        {Object.entries(postsByTag)
+          .sort((a, b) => b[1].length - a[1].length)
+          .map(([tag, tagPosts], index) => (
+            <a 
+              href={`/tags#${tag}`}
+              class={`${getTagSize(tagPosts.length)} font-serif transition-all duration-300 hover:text-[#E74C3C] ${
+                currentTag === tag ? 'text-[#E74C3C]' : 'text-[#6B6B6B]'
+              }`}
+              style={`transform: translateY(${index % 3 === 0 ? '0' : index % 3 === 1 ? '8px' : '-4px'})`}
+            >
+              {tag}
+              <span class="text-xs ml-1 opacity-60">({tagPosts.length})</span>
+            </a>
+          ))}
+      </div>
+    </section>
+    
+    {/* 文章列表 */}
+    {currentTag && (
+      <section>
+        <h2 class="text-sm uppercase tracking-widest text-[#6B6B6B] mb-8">
+          #{currentTag} · {currentPosts.length} 篇文章
+        </h2>
+        <div class="divide-y divide-[#E8E8E8]">
+          {currentPosts
+            .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+            .map(post => (
+              <PostCard post={post} />
+            ))}
+        </div>
+      </section>
+    )}
+  </div>
+</BaseLayout>

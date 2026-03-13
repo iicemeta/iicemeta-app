@@ -1,0 +1,35 @@
+---
+const navItems = [
+  { href: '/', label: '首页' },
+  { href: '/categories', label: '分类' },
+  { href: '/tags', label: '标签' },
+  { href: '/archive', label: '归档' },
+];
+
+const currentPath = Astro.url.pathname;
+---
+
+<header class="py-8 px-6 md:px-12">
+  <nav class="flex justify-between items-center max-w-6xl mx-auto">
+    <a href="/" class="text-2xl font-serif text-[#1A1A1A] hover:text-[#E74C3C] transition-colors duration-300">
+      間
+    </a>
+    
+    <ul class="flex gap-8">
+      {navItems.map(item => (
+        <li>
+          <a 
+            href={item.href}
+            class={`text-sm tracking-wide transition-all duration-300 hover:translate-x-1 inline-block ${
+              currentPath === item.href 
+                ? 'text-[#E74C3C]' 
+                : 'text-[#6B6B6B] hover:text-[#1A1A1A]'
+            }`}
+          >
+            {item.label}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </nav>
+</header>

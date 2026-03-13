@@ -1,0 +1,76 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const posts = await getCollection('posts');
+
+// 按年月分组
+const postsByYearMonth = posts.reduce((acc, post) => {
+  const date = post.data.date;
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
+  const key = `${year}-${month.toString().padStart(2, '0')}`;
+  
+  if (!acc[key]) {
+    acc[key] = { year, month, posts: [] };
+  }
+  acc[key].posts.push(post);
+  return acc;
+}, {} as Record<string, { year: number; month: number; posts: typeof posts }>);
+
+// 按时间倒序排列
+const sortedKeys = Object.keys(postsByYearMonth).sort().reverse();
+---
+
+<BaseLayout title="归档">
+  <div class="max-w-4xl mx-auto">
+    <h1 class="text-4xl md:text-5xl font-serif text-[#1A1A1A] mb-12">
+      归档
+    </h1>
+    
+    {/* 时间轴 */}
+    <div class="relative">
+      {/* 时间轴线 */}
+      <div class="absolute left-0 md:left-4 top-0 bottom-0 w-px bg-[#E8E8E8]"></div>
+      
+      {sortedKeys.map(key => {
+        const { year, month, posts: monthPosts } = postsByYearMonth[key];
+        const sortedPosts = monthPosts.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+        
+        return (
+          <section class="relative pl-8 md:pl-16 pb-12">
+            {/* 时间节点 */}
+            <div class="absolute left-0 md:left-4 top-2 w-2 h-2 -translate-x-1/2 rounded-full bg-[#E74C3C]"></div>
+            
+            {/* 月份标题 */}
+            <h2 class="text-2xl font-serif text-[#1A1A1A] mb-6">
+              {year}年{month}月
+              <span class="text-sm text-[#6B6B6B] ml-2">
+                ({sortedPosts.length} 篇)
+              </span>
+            </h2>
+            
+            {/* 文章列表 */}
+            <ul class="space-y-4">
+              {sortedPosts.map(post => (
+                <li>
+                  <a 
+                    href={`/posts/${post.id}`}
+                    class="group flex items-baseline gap-4 text-[#6B6B6B] hover:text-[#1A1A1A] transition-all duration-300"
+                  >
+                    <time class="text-sm whitespace-nowrap">
+                      {post.data.date.toLocaleDateString('zh-CN', { month: '2-digit', day: '2-digit' })}
+                    </time>
+                    <span class="group-hover:translate-x-1 transition-transform duration-300">
+                      {post.data.title}
+                    </span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
+        );
+      })}
+    </div>
+  </div>
+</BaseLayout>

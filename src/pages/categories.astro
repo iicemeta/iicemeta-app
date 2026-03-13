@@ -1,0 +1,69 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PostCard from '../components/PostCard.astro';
+import { getCollection } from 'astro:content';
+
+const posts = await getCollection('posts');
+
+// 按分类分组
+const postsByCategory = posts.reduce((acc, post) => {
+  const category = post.data.category;
+  if (!acc[category]) {
+    acc[category] = [];
+  }
+  acc[category].push(post);
+  return acc;
+}, {} as Record<string, typeof posts>);
+
+// 排序分类
+const sortedCategories = Object.keys(postsByCategory).sort();
+
+// 获取当前选中的分类
+const currentCategory = Astro.url.searchParams.get('category') || sortedCategories[0];
+const currentPosts = postsByCategory[currentCategory] || [];
+---
+
+<BaseLayout title="分类">
+  <div class="max-w-6xl mx-auto">
+    <h1 class="text-4xl md:text-5xl font-serif text-[#1A1A1A] mb-12">
+      分类
+    </h1>
+    
+    {/* 分类导航 */}
+    <nav class="mb-12 overflow-x-auto">
+      <ul class="flex gap-2 pb-4 border-b border-[#E8E8E8]">
+        {sortedCategories.map(category => (
+          <li>
+            <a 
+              href={`/categories?category=${encodeURIComponent(category)}`}
+              class={`px-6 py-3 text-sm whitespace-nowrap transition-all duration-300 ${
+                currentCategory === category
+                  ? 'text-[#E74C3C] border-b-2 border-[#E74C3C] -mb-4 pb-4'
+                  : 'text-[#6B6B6B] hover:text-[#1A1A1A]'
+              }`}
+            >
+              {category}
+              <span class="ml-2 text-xs opacity-60">
+                ({postsByCategory[category].length})
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+    
+    {/* 文章列表 */}
+    <section>
+      <h2 class="text-sm uppercase tracking-widest text-[#6B6B6B] mb-8">
+        {currentCategory} · {currentPosts.length} 篇文章
+      </h2>
+      <div class="divide-y divide-[#E8E8E8]">
+        {currentPosts
+          .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+          .map(post => (
+            <PostCard post={post} />
+          ))}
+      </div>
+    </section>
+  </div>
+</BaseLayout>
