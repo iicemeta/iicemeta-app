@@ -12,7 +12,8 @@ export const photoSchema = z.object({
   mood: z.enum(['joy', 'calm', 'nostalgic', 'melancholy', 'excited', 'peaceful']).default('calm'),
 });
 
-export type Photo = z.infer<typeof photoSchema>;
+// 使用 zod 的 infer 类型工具
+export type Photo = import('astro:schema').infer<typeof photoSchema>;
 
 export const photosCollection = defineCollection({
   loader: glob({

@@ -24,4 +24,4 @@ pnpm-debug.log*
 .idea/
 
 # 开发文档
-plans/
+# plans/
