@@ -91,6 +91,15 @@ export const siteConfig = {
       serif: 'Noto Serif SC',
     },
   },
+
+  // 默认 CC 许可证配置
+  license: {
+    // 默认许可证类型
+    // 可选: 'by-nc-sa' | 'by-nc-nd' | 'by-sa' | 'by-nd' | 'by' | 'zero'
+    default: 'by-sa' as const,
+    // 版本号
+    version: '4.0',
+  },
 } as const;
 
 // 类型导出，方便在其他文件中使用

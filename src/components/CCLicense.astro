@@ -1,0 +1,143 @@
+---
+// CC 许可证组件
+// 显示文章版权信息和知识共享许可
+
+interface Props {
+  title: string;
+  author: string;
+  date: Date;
+  license?: 'by-nc-sa' | 'by-nc-nd' | 'by-sa' | 'by-nd' | 'by' | 'zero';
+  licenseVersion?: string;
+}
+
+const {
+  title,
+  author,
+  date,
+  license = 'by-nc-sa',
+  licenseVersion = '4.0',
+} = Astro.props;
+
+// 许可证配置
+const licenseConfig = {
+  'by-nc-sa': {
+    name: 'CC BY-NC-SA 4.0',
+    fullName: '署名-非商业性使用-相同方式共享 4.0 国际',
+    url: 'https://creativecommons.org/licenses/by-nc-sa/4.0/',
+    icons: ['by', 'nc', 'sa'],
+  },
+  'by-nc-nd': {
+    name: 'CC BY-NC-ND 4.0',
+    fullName: '署名-非商业性使用-禁止演绎 4.0 国际',
+    url: 'https://creativecommons.org/licenses/by-nc-nd/4.0/',
+    icons: ['by', 'nc', 'nd'],
+  },
+  'by-sa': {
+    name: 'CC BY-SA 4.0',
+    fullName: '署名-相同方式共享 4.0 国际',
+    url: 'https://creativecommons.org/licenses/by-sa/4.0/',
+    icons: ['by', 'sa'],
+  },
+  'by-nd': {
+    name: 'CC BY-ND 4.0',
+    fullName: '署名-禁止演绎 4.0 国际',
+    url: 'https://creativecommons.org/licenses/by-nd/4.0/',
+    icons: ['by', 'nd'],
+  },
+  'by': {
+    name: 'CC BY 4.0',
+    fullName: '署名 4.0 国际',
+    url: 'https://creativecommons.org/licenses/by/4.0/',
+    icons: ['by'],
+  },
+  'zero': {
+    name: 'CC0 1.0',
+    fullName: '公有领域 dedication',
+    url: 'https://creativecommons.org/publicdomain/zero/1.0/',
+    icons: ['zero'],
+  },
+};
+
+const currentLicense = licenseConfig[license];
+
+// 格式化日期
+const formattedDate = date.toLocaleDateString('zh-CN', {
+  year: 'numeric',
+  month: '2-digit',
+  day: '2-digit',
+}).replace(/\//g, '-');
+
+// 获取当前页面 URL
+const pageUrl = Astro.url.href;
+---
+
+<div class="cc-license-card mt-12 p-6 bg-[#F5F5F5] rounded-lg border border-[#E8E8E8]">
+  <div class="flex items-start gap-4">
+    <!-- CC Logo -->
+    <div class="flex-shrink-0">
+      <svg
+        class="w-16 h-16 text-[#6B6B6B] opacity-30"
+        viewBox="0 0 120 120"
+        fill="currentColor"
+      >
+        <circle cx="60" cy="60" r="55" fill="none" stroke="currentColor" stroke-width="4"/>
+        <text x="60" y="75" text-anchor="middle" font-size="45" font-weight="bold">cc</text>
+      </svg>
+    </div>
+
+    <div class="flex-1 min-w-0">
+      <!-- 文章标题和链接 -->
+      <h3 class="text-base font-medium text-[#1A1A1A] mb-1 truncate">
+        {title}
+      </h3>
+      <a
+        href={pageUrl}
+        class="text-sm text-[#6B6B6B] hover:text-[#E74C3C] transition-colors break-all"
+      >
+        {pageUrl}
+      </a>
+
+      <!-- 元信息 -->
+      <div class="flex flex-wrap items-center gap-x-6 gap-y-2 mt-4 text-sm">
+        <div class="flex items-center gap-2">
+          <span class="text-[#6B6B6B]">Author</span>
+          <span class="text-[#1A1A1A] font-medium">{author}</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="text-[#6B6B6B]">Published at</span>
+          <span class="text-[#1A1A1A]">{formattedDate}</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="text-[#6B6B6B]">License</span>
+          <a
+            href={currentLicense.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-[#E74C3C] hover:underline font-medium"
+            title={currentLicense.fullName}
+          >
+            {currentLicense.name}
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .cc-license-card {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cc-license-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #E74C3C 0%, #F39C12 50%, #E74C3C 100%);
+    opacity: 0.6;
+  }
+</style>
