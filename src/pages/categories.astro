@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import PostCard from '../components/PostCard.astro';
 import { getCollection } from 'astro:content';
+import { pinyin } from 'pinyin-pro';
 
 const posts = await getCollection('posts');
 
@@ -15,86 +15,108 @@ const postsByCategory = posts.reduce((acc, post) => {
   return acc;
 }, {} as Record<string, typeof posts>);
 
-// 排序分类
-const sortedCategories = Object.keys(postsByCategory).sort();
+// 获取首字母（支持英文和中文拼音）
+function getFirstLetter(str: string): string {
+  const firstChar = str.charAt(0);
+  
+  // 如果是英文字母，直接返回大写
+  if (/^[a-zA-Z]$/.test(firstChar)) {
+    return firstChar.toUpperCase();
+  }
+  
+  // 如果是中文，获取拼音首字母
+  if (/^[\u4e00-\u9fa5]$/.test(firstChar)) {
+    const py = pinyin(firstChar, { toneType: 'none', type: 'first' });
+    return py.charAt(0).toUpperCase();
+  }
+  
+  // 其他字符归到 # 组
+  return '#';
+}
 
-// 获取当前选中的分类
-const currentCategory = Astro.url.searchParams.get('category') || sortedCategories[0];
-const currentPosts = postsByCategory[currentCategory] || [];
+// 按字母分组分类
+const groupedCategories: Record<string, [string, typeof posts][]> = {};
+Object.entries(postsByCategory)
+  .sort((a, b) => a[0].localeCompare(b[0], 'zh-CN'))
+  .forEach(([category, categoryPosts]) => {
+    const letter = getFirstLetter(category);
+    if (!groupedCategories[letter]) {
+      groupedCategories[letter] = [];
+    }
+    groupedCategories[letter].push([category, categoryPosts]);
+  });
+
+// 获取排序后的字母（A-Z 在前，# 在最后）
+const sortedLetters = Object.keys(groupedCategories).sort((a, b) => {
+  if (a === '#') return 1;
+  if (b === '#') return -1;
+  return a.localeCompare(b);
+});
 ---
 
 <BaseLayout title="分类">
   <div class="max-w-6xl mx-auto px-4 sm:px-6">
     {/* 标题 - 入场动画 */}
-    <h1 class="text-3xl sm:text-4xl md:text-5xl font-serif text-[#1A1A1A] mb-20 md:mb-24 animate-fade-in-up">分类</h1>
+    <h1 class="text-3xl sm:text-4xl md:text-5xl font-serif text-[#1A1A1A] mb-12 md:mb-16 animate-fade-in-up">
+      分类
+    </h1>
 
-    {/* 分类导航 - 响应式：移动端下拉，桌面端横向 */}
-    <nav class="mt-4 md:mt-6 mb-12 md:mb-16 reveal">
-      {/* 移动端：下拉选择 */}
-      <div class="md:hidden">
-        <label for="category-select" class="sr-only">选择分类</label>
-        <select
-          id="category-select"
-          class="w-full px-4 py-3 bg-white border border-[#E8E8E8] rounded-lg text-[#1A1A1A] focus:outline-none focus:border-[#E74C3C] transition-colors appearance-none cursor-pointer"
-          style="background-image: url('data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 fill=%27none%27 viewBox=%270 0 24 24%27 stroke=%27%236B6B6B%27%3E%3Cpath stroke-linecap=%27round%27 stroke-linejoin=%27round%27 stroke-width=%272%27 d=%27M19 9l-7 7-7-7%27/%3E%3C/svg%3E'); background-repeat: no-repeat; background-position: right 1rem center; background-size: 1.5rem;"
+    {/* 分类统计 */}
+    <p class="text-[#6B6B6B] mb-12 reveal">
+      共 {Object.keys(postsByCategory).length} 个分类
+    </p>
+
+    {/* 字母导航 */}
+    <nav class="flex flex-wrap gap-2 mb-12 reveal">
+      {sortedLetters.map((letter) => (
+        <a
+          href={`#category-${letter}`}
+          class="w-10 h-10 flex items-center justify-center text-sm font-medium text-[#6B6B6B] hover:text-[#E74C3C] hover:bg-[#F5F5F5] rounded transition-all duration-300"
         >
-          {sortedCategories.map((category) => (
-            <option value={category} selected={currentCategory === category}>
-              {category} ({postsByCategory[category].length})
-            </option>
-          ))}
-        </select>
-      </div>
-
-      {/* 桌面端：横向导航 */}
-      <ul class="hidden md:flex gap-2 pb-4 border-b border-[#E8E8E8] overflow-x-auto scrollbar-hide">
-        {sortedCategories.map((category, index) => (
-          <li
-            class="animate-fade-in-up flex-shrink-0"
-            style={`animation-delay: ${(index + 1) * 0.1}s; animation-fill-mode: both;`}
-          >
-            <a
-              href={`/categories?category=${encodeURIComponent(category)}`}
-              class={`px-4 lg:px-6 py-3 text-sm whitespace-nowrap transition-all duration-300 tag-bounce ${
-                currentCategory === category
-                  ? 'text-[#E74C3C] border-b-2 border-[#E74C3C] -mb-4 pb-4'
-                  : 'text-[#6B6B6B] hover:text-[#1A1A1A]'
-              }`}
-            >
-              {category}
-              <span class="ml-2 text-xs opacity-60">
-                ({postsByCategory[category].length})
-              </span>
-            </a>
-          </li>
-        ))}
-      </ul>
+          {letter}
+        </a>
+      ))}
     </nav>
 
-    {/* 文章列表 - 滚动触发动画 */}
-    <section>
-      <h2 class="text-xs sm:text-sm uppercase tracking-widest text-[#6B6B6B] mb-6 md:mb-8 reveal">
-        {currentCategory} · {currentPosts.length} 篇文章
-      </h2>
-      <div class="divide-y divide-[#E8E8E8]">
-        {currentPosts
-          .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
-          .map((post, index) => (
-            <div class={`reveal reveal-delay-${Math.min(index + 1, 5)}`}>
-              <PostCard post={post} />
-            </div>
-          ))}
-      </div>
-    </section>
+    {/* 分类列表 - 按字母分组 */}
+    <div class="space-y-12">
+      {sortedLetters.map((letter, letterIndex) => (
+        <section id={`category-${letter}`} class="reveal">
+          {/* 字母标题 */}
+          <h2 class="text-2xl font-serif text-[#1A1A1A] mb-6 pb-2 border-b border-[#E8E8E8]">
+            {letter}
+          </h2>
+          
+          {/* 该字母下的分类 */}
+          <div class="flex flex-wrap gap-3 mt-4">
+            {groupedCategories[letter].map(([category, categoryPosts], index) => (
+              <a
+                href={`/categories/${encodeURIComponent(category)}`}
+                class="group inline-flex items-center gap-2 px-4 py-2 bg-white border border-[#E8E8E8] rounded-full text-sm text-[#6B6B6B] hover:border-[#E74C3C] hover:text-[#E74C3C] transition-all duration-300"
+                style={`animation-delay: ${(letterIndex * 0.1) + (index * 0.05)}s;`}
+              >
+                <span>{category}</span>
+                <span class="text-xs px-2 py-0.5 bg-[#F5F5F5] group-hover:bg-[#E74C3C] group-hover:text-white rounded-full transition-colors duration-300">
+                  {categoryPosts.length}
+                </span>
+              </a>
+            ))}
+          </div>
+        </section>
+      ))}
+    </div>
+
+    {/* 无分类提示 */}
+    {sortedLetters.length === 0 && (
+      <section class="text-center py-20 reveal">
+        <p class="text-[#6B6B6B] text-lg">暂无分类</p>
+      </section>
+    )}
   </div>
 </BaseLayout>
 
-<script>
-  // 移动端下拉选择处理
-  const categorySelect = document.getElementById('category-select');
-  categorySelect?.addEventListener('change', (e) => {
-    const target = e.target as HTMLSelectElement;
-    const category = target.value;
-    window.location.href = `/categories?category=${encodeURIComponent(category)}`;
-  });
-</script>
+<style>
+  html {
+    scroll-behavior: smooth;
+  }
+</style>

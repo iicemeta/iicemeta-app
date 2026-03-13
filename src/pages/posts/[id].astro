@@ -46,7 +46,7 @@ const tocHeadings = headings.filter(h => h.depth === 2 || h.depth === 3);
         <div class="flex flex-wrap items-center gap-2 md:gap-4 text-xs md:text-sm text-[#6B6B6B]">
           <time datetime={date.toISOString()}>{formattedDate}</time>
           <span class="opacity-50 hidden sm:inline">·</span>
-          <a href={`/categories?category=${encodeURIComponent(category)}`} class="link-underline hover:text-[#E74C3C] transition-colors">
+          <a href={`/categories/${encodeURIComponent(category)}`} class="link-underline hover:text-[#E74C3C] transition-colors">
             {category}
           </a>
           {readingTime && (
@@ -61,7 +61,7 @@ const tocHeadings = headings.filter(h => h.depth === 2 || h.depth === 3);
           <div class="flex gap-2 flex-wrap mt-4 md:mt-6">
             {tags.map((tag, index) => (
               <a
-                href={`/tags#${tag}`}
+                href={`/tags/${encodeURIComponent(tag)}`}
                 class="tag-bounce text-xs px-2 py-1 md:px-3 md:py-1 bg-[#E8E8E8] text-[#6B6B6B] rounded-full hover:bg-[#E74C3C] hover:text-white transition-all duration-300"
                 style={`animation-delay: ${index * 0.05}s;`}
               >

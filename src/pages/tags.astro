@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import PostCard from '../components/PostCard.astro';
 import { getCollection } from 'astro:content';
+import { pinyin } from 'pinyin-pro';
 
 const posts = await getCollection('posts');
 
@@ -16,86 +16,108 @@ const postsByTag = posts.reduce((acc, post) => {
   return acc;
 }, {} as Record<string, typeof posts>);
 
-// 计算标签大小
-const maxCount = Math.max(...Object.values(postsByTag).map(p => p.length));
-const minCount = Math.min(...Object.values(postsByTag).map(p => p.length));
+// 获取首字母（支持英文和中文拼音）
+function getFirstLetter(str: string): string {
+  const firstChar = str.charAt(0);
+  
+  // 如果是英文字母，直接返回大写
+  if (/^[a-zA-Z]$/.test(firstChar)) {
+    return firstChar.toUpperCase();
+  }
+  
+  // 如果是中文，获取拼音首字母
+  if (/^[\u4e00-\u9fa5]$/.test(firstChar)) {
+    const py = pinyin(firstChar, { toneType: 'none', type: 'first' });
+    return py.charAt(0).toUpperCase();
+  }
+  
+  // 其他字符归到 # 组
+  return '#';
+}
 
-const getTagSize = (count: number) => {
-  if (maxCount === minCount) return 'text-base';
-  const ratio = (count - minCount) / (maxCount - minCount);
-  if (ratio > 0.7) return 'text-xl sm:text-2xl';
-  if (ratio > 0.4) return 'text-lg sm:text-xl';
-  return 'text-sm sm:text-base';
-};
+// 按字母分组标签
+const groupedTags: Record<string, [string, typeof posts][]> = {};
+Object.entries(postsByTag)
+  .sort((a, b) => a[0].localeCompare(b[0], 'zh-CN'))
+  .forEach(([tag, tagPosts]) => {
+    const letter = getFirstLetter(tag);
+    if (!groupedTags[letter]) {
+      groupedTags[letter] = [];
+    }
+    groupedTags[letter].push([tag, tagPosts]);
+  });
 
-// 获取当前选中的标签
-const currentTag = Astro.url.hash.slice(1) || Object.keys(postsByTag)[0];
-const currentPosts = postsByTag[currentTag] || [];
+// 获取排序后的字母（A-Z 在前，# 在最后）
+const sortedLetters = Object.keys(groupedTags).sort((a, b) => {
+  if (a === '#') return 1;
+  if (b === '#') return -1;
+  return a.localeCompare(b);
+});
 ---
 
 <BaseLayout title="标签">
   <div class="max-w-6xl mx-auto px-4 sm:px-6">
     {/* 标题 - 入场动画 */}
-    <h1 class="text-3xl sm:text-4xl md:text-5xl font-serif text-[#1A1A1A] mb-20 md:mb-24 animate-fade-in-up">
+    <h1 class="text-3xl sm:text-4xl md:text-5xl font-serif text-[#1A1A1A] mb-12 md:mb-16 animate-fade-in-up">
       标签
     </h1>
 
-    {/* 标签云 - 错开动画 */}
-    <section class="mt-4 md:mt-6 mb-16 md:mb-20 reveal">
-      <div class="flex flex-wrap gap-3 sm:gap-4 items-baseline">
-        {Object.entries(postsByTag)
-          .sort((a, b) => b[1].length - a[1].length)
-          .map(([tag, tagPosts], index) => (
-            <a
-              href={`/tags#${tag}`}
-              class={`${getTagSize(tagPosts.length)} font-serif transition-all duration-300 hover:text-[#E74C3C] tag-bounce ${
-                currentTag === tag ? 'text-[#E74C3C]' : 'text-[#6B6B6B]'
-              }`}
-              style={`transform: translateY(${index % 3 === 0 ? '0' : index % 3 === 1 ? '6px' : '-3px'}); animation-delay: ${index * 0.05}s;`}
-            >
-              {tag}
-              <span class="text-xs ml-1 opacity-60">({tagPosts.length})</span>
-            </a>
-          ))}
-      </div>
-    </section>
+    {/* 标签统计 */}
+    <p class="text-[#6B6B6B] mb-12 reveal">
+      共 {Object.keys(postsByTag).length} 个标签
+    </p>
 
-    {/* 文章列表 - 滚动触发动画 */}
-    {currentTag && (
-      <section>
-        <h2 class="text-xs sm:text-sm uppercase tracking-widest text-[#6B6B6B] mb-6 md:mb-8 reveal">
-          #{currentTag} · {currentPosts.length} 篇文章
-        </h2>
-        <div class="divide-y divide-[#E8E8E8]">
-          {currentPosts
-            .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
-            .map((post, index) => (
-              <div class={`reveal reveal-delay-${Math.min(index + 1, 5)}`}>
-                <PostCard post={post} />
-              </div>
+    {/* 字母导航 */}
+    <nav class="flex flex-wrap gap-2 mb-12 reveal">
+      {sortedLetters.map((letter) => (
+        <a
+          href={`#tag-${letter}`}
+          class="w-10 h-10 flex items-center justify-center text-sm font-medium text-[#6B6B6B] hover:text-[#E74C3C] hover:bg-[#F5F5F5] rounded transition-all duration-300"
+        >
+          {letter}
+        </a>
+      ))}
+    </nav>
+
+    {/* 标签列表 - 按字母分组 */}
+    <div class="space-y-12">
+      {sortedLetters.map((letter, letterIndex) => (
+        <section id={`tag-${letter}`} class="reveal">
+          {/* 字母标题 */}
+          <h2 class="text-2xl font-serif text-[#1A1A1A] mb-6 pb-2 border-b border-[#E8E8E8]">
+            {letter}
+          </h2>
+          
+          {/* 该字母下的标签 */}
+          <div class="flex flex-wrap gap-3 mt-4">
+            {groupedTags[letter].map(([tag, tagPosts], index) => (
+              <a
+                href={`/tags/${encodeURIComponent(tag)}`}
+                class="group inline-flex items-center gap-2 px-4 py-2 bg-white border border-[#E8E8E8] rounded-full text-sm text-[#6B6B6B] hover:border-[#E74C3C] hover:text-[#E74C3C] transition-all duration-300"
+                style={`animation-delay: ${(letterIndex * 0.1) + (index * 0.05)}s;`}
+              >
+                <span>{tag}</span>
+                <span class="text-xs px-2 py-0.5 bg-[#F5F5F5] group-hover:bg-[#E74C3C] group-hover:text-white rounded-full transition-colors duration-300">
+                  {tagPosts.length}
+                </span>
+              </a>
             ))}
-        </div>
+          </div>
+        </section>
+      ))}
+    </div>
+
+    {/* 无标签提示 */}
+    {sortedLetters.length === 0 && (
+      <section class="text-center py-20 reveal">
+        <p class="text-[#6B6B6B] text-lg">暂无标签</p>
       </section>
     )}
   </div>
 </BaseLayout>
 
-<script>
-  // 处理标签切换时的滚动定位
-  document.addEventListener('DOMContentLoaded', () => {
-    // 如果有 hash，滚动到文章列表区域
-    if (window.location.hash) {
-      const articleSection = document.querySelector('section:nth-of-type(2)');
-      if (articleSection) {
-        const headerOffset = 100;
-        const elementPosition = articleSection.getBoundingClientRect().top;
-        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-
-        window.scrollTo({
-          top: offsetPosition,
-          behavior: 'smooth'
-        });
-      }
-    }
-  });
-</script>
+<style>
+  html {
+    scroll-behavior: smooth;
+  }
+</style>

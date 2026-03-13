@@ -1,0 +1,94 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostCard from '../../components/PostCard.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('posts');
+  
+  // 收集所有标签
+  const allTags = new Set<string>();
+  posts.forEach(post => {
+    post.data.tags.forEach(tag => allTags.add(tag));
+  });
+  
+  // 为每个标签生成路径
+  return Array.from(allTags).map(tag => ({
+    params: { tag },
+    props: { 
+      tag,
+      posts: posts.filter(post => post.data.tags.includes(tag))
+        .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+    },
+  }));
+}
+
+const { tag, posts: tagPosts } = Astro.props;
+
+// 获取所有标签用于标签云
+const allPosts = await getCollection('posts');
+const postsByTag = allPosts.reduce((acc, post) => {
+  post.data.tags.forEach(t => {
+    if (!acc[t]) {
+      acc[t] = [];
+    }
+    acc[t].push(post);
+  });
+  return acc;
+}, {} as Record<string, typeof allPosts>);
+
+// 计算标签大小
+const maxCount = Math.max(...Object.values(postsByTag).map(p => p.length));
+const minCount = Math.min(...Object.values(postsByTag).map(p => p.length));
+
+const getTagSize = (count: number) => {
+  if (maxCount === minCount) return 'text-base';
+  const ratio = (count - minCount) / (maxCount - minCount);
+  if (ratio > 0.7) return 'text-xl sm:text-2xl';
+  if (ratio > 0.4) return 'text-lg sm:text-xl';
+  return 'text-sm sm:text-base';
+};
+---
+
+<BaseLayout title={`标签: ${tag}`}>
+  <div class="max-w-6xl mx-auto px-4 sm:px-6">
+    {/* 标题 - 入场动画 */}
+    <h1 class="text-3xl sm:text-4xl md:text-5xl font-serif text-[#1A1A1A] mb-20 md:mb-24 animate-fade-in-up">
+      标签
+    </h1>
+
+    {/* 标签云 - 错开动画 */}
+    <section class="mt-4 md:mt-6 mb-16 md:mb-20 reveal">
+      <div class="flex flex-wrap gap-3 sm:gap-4 items-baseline">
+        {Object.entries(postsByTag)
+          .sort((a, b) => b[1].length - a[1].length)
+          .map(([t, tPosts], index) => (
+            <a
+              href={`/tags/${encodeURIComponent(t)}`}
+              class={`${getTagSize(tPosts.length)} font-serif transition-all duration-300 hover:text-[#E74C3C] tag-bounce ${
+                tag === t ? 'text-[#E74C3C]' : 'text-[#6B6B6B]'
+              }`}
+              style={`transform: translateY(${index % 3 === 0 ? '0' : index % 3 === 1 ? '6px' : '-3px'}); animation-delay: ${index * 0.05}s;`}
+            >
+              {t}
+              <span class="text-xs ml-1 opacity-60">({tPosts.length})</span>
+            </a>
+          ))}
+      </div>
+    </section>
+
+    {/* 文章列表 - 滚动触发动画 */}
+    <section>
+      <h2 class="text-xs sm:text-sm uppercase tracking-widest text-[#6B6B6B] mb-6 md:mb-8 reveal">
+        #{tag} · {tagPosts.length} 篇文章
+      </h2>
+      <div class="divide-y divide-[#E8E8E8]">
+        {tagPosts.map((post, index) => (
+          <div class={`reveal reveal-delay-${Math.min(index + 1, 5)}`}>
+            <PostCard post={post} />
+          </div>
+        ))}
+      </div>
+    </section>
+  </div>
+</BaseLayout>

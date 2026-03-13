@@ -23,6 +23,7 @@
     "astro": "^6.0.4",
     "astro-icon": "^1.1.5",
     "iconify": "^1.4.0",
+    "pinyin-pro": "^3.28.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "sharp": "^0.34.5",

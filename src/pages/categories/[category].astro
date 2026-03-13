@@ -1,0 +1,119 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostCard from '../../components/PostCard.astro';
+import { getCollection } from 'astro:content';
+
+// 生成所有分类的静态路径
+export async function getStaticPaths() {
+  const posts = await getCollection('posts');
+  
+  // 按分类分组
+  const postsByCategory = posts.reduce((acc, post) => {
+    const category = post.data.category;
+    if (!acc[category]) {
+      acc[category] = [];
+    }
+    acc[category].push(post);
+    return acc;
+  }, {} as Record<string, typeof posts>);
+  
+  // 为每个分类生成路径
+  return Object.entries(postsByCategory).map(([category, categoryPosts]) => ({
+    params: { category },
+    props: { 
+      category,
+      posts: categoryPosts.sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+    },
+  }));
+}
+
+const { category, posts: categoryPosts } = Astro.props;
+
+// 获取所有分类用于导航
+const allPosts = await getCollection('posts');
+const postsByCategory = allPosts.reduce((acc, post) => {
+  const cat = post.data.category;
+  if (!acc[cat]) {
+    acc[cat] = [];
+  }
+  acc[cat].push(post);
+  return acc;
+}, {} as Record<string, typeof allPosts>);
+
+// 排序分类
+const sortedCategories = Object.keys(postsByCategory).sort();
+---
+
+<BaseLayout title={`分类: ${category}`}>
+  <div class="max-w-6xl mx-auto px-4 sm:px-6">
+    {/* 标题 - 入场动画 */}
+    <h1 class="text-3xl sm:text-4xl md:text-5xl font-serif text-[#1A1A1A] mb-20 md:mb-24 animate-fade-in-up">分类</h1>
+
+    {/* 分类导航 - 响应式：移动端下拉，桌面端横向 */}
+    <nav class="mt-4 md:mt-6 mb-12 md:mb-16 reveal">
+      {/* 移动端：下拉选择 */}
+      <div class="md:hidden">
+        <label for="category-select" class="sr-only">选择分类</label>
+        <select
+          id="category-select"
+          class="w-full px-4 py-3 bg-white border border-[#E8E8E8] rounded-lg text-[#1A1A1A] focus:outline-none focus:border-[#E74C3C] transition-colors appearance-none cursor-pointer"
+          style="background-image: url('data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 fill=%27none%27 viewBox=%270 0 24 24%27 stroke=%27%236B6B6B%27%3E%3Cpath stroke-linecap=%27round%27 stroke-linejoin=%27round%27 stroke-width=%272%27 d=%27M19 9l-7 7-7-7%27/%3E%3C/svg%3E'); background-repeat: no-repeat; background-position: right 1rem center; background-size: 1.5rem;"
+        >
+          {sortedCategories.map((cat) => (
+            <option value={cat} selected={category === cat}>
+              {cat} ({postsByCategory[cat].length})
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {/* 桌面端：横向导航 */}
+      <ul class="hidden md:flex gap-2 pb-4 border-b border-[#E8E8E8] overflow-x-auto scrollbar-hide">
+        {sortedCategories.map((cat, index) => (
+          <li
+            class="animate-fade-in-up flex-shrink-0"
+            style={`animation-delay: ${(index + 1) * 0.1}s; animation-fill-mode: both;`}
+          >
+            <a
+              href={`/categories/${encodeURIComponent(cat)}`}
+              class={`px-4 lg:px-6 py-3 text-sm whitespace-nowrap transition-all duration-300 tag-bounce ${
+                category === cat
+                  ? 'text-[#E74C3C] border-b-2 border-[#E74C3C] -mb-4 pb-4'
+                  : 'text-[#6B6B6B] hover:text-[#1A1A1A]'
+              }`}
+            >
+              {cat}
+              <span class="ml-2 text-xs opacity-60">
+                ({postsByCategory[cat].length})
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    {/* 文章列表 - 滚动触发动画 */}
+    <section>
+      <h2 class="text-xs sm:text-sm uppercase tracking-widest text-[#6B6B6B] mb-6 md:mb-8 reveal">
+        {category} · {categoryPosts.length} 篇文章
+      </h2>
+      <div class="divide-y divide-[#E8E8E8]">
+        {categoryPosts.map((post, index) => (
+          <div class={`reveal reveal-delay-${Math.min(index + 1, 5)}`}>
+            <PostCard post={post} />
+          </div>
+        ))}
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<script>
+  // 移动端下拉选择处理
+  const categorySelect = document.getElementById('category-select');
+  categorySelect?.addEventListener('change', (e) => {
+    const target = e.target as HTMLSelectElement;
+    const cat = target.value;
+    window.location.href = `/categories/${encodeURIComponent(cat)}`;
+  });
+</script>
