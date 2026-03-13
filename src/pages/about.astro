@@ -5,15 +5,15 @@ import { siteConfig } from '../site.config';
 ---
 
 <BaseLayout title="关于" description={`关于 ${siteConfig.author.name}`}>
-  <div class="max-w-4xl mx-auto min-h-[60vh] flex items-center">
+  <div class="max-w-4xl mx-auto min-h-[60vh] flex items-center px-4 sm:px-6">
     {/* 错落布局容器 */}
-    <div class="grid grid-cols-12 gap-8 w-full">
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-8 w-full">
 
       {/* 左侧：头像区域 - 偏上错位 */}
-      <div class="col-span-12 md:col-span-5 flex flex-col items-center md:items-start md:pt-12 reveal-left">
+      <div class="col-span-1 md:col-span-5 flex flex-col items-center md:items-start md:pt-12 reveal-left">
         {/* 头像容器 - 带微旋转和阴影 */}
         <div
-          class="relative w-40 h-40 md:w-48 md:h-48 rounded-full overflow-hidden shadow-2xl animate-float"
+          class="relative w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 rounded-full overflow-hidden shadow-2xl animate-float"
           style="transform: rotate(-3deg);"
         >
           {/* 使用本地头像图片 */}
@@ -27,46 +27,46 @@ import { siteConfig } from '../site.config';
 
         {/* 头像下方的装饰线 - 展开动画 */}
         <div
-          class="mt-8 w-16 h-px bg-[#E74C3C] opacity-60 animate-line-expand"
-          style="transform: translateX(20px); animation-delay: 0.5s;"
+          class="mt-6 md:mt-8 w-16 h-px bg-[#E74C3C] opacity-60 animate-line-expand hidden md:block md:translate-x-5"
+          style="animation-delay: 0.5s;"
         ></div>
       </div>
 
       {/* 右侧：文字内容 - 偏下错位 */}
-      <div class="col-span-12 md:col-span-7 md:pt-24 reveal-right">
+      <div class="col-span-1 md:col-span-7 md:pt-24 text-center md:text-left reveal-right">
         {/* 主文案区域 */}
-        <div class="space-y-6">
+        <div class="space-y-4 md:space-y-6">
           {/* 第一组：ID 玩梗 */}
           <div class="space-y-2">
-            <p class="text-2xl md:text-3xl font-serif text-[#1A1A1A] leading-relaxed animate-fade-in-up" style="animation-delay: 0.1s;">
+            <p class="text-xl sm:text-2xl md:text-3xl font-serif text-[#1A1A1A] leading-relaxed animate-fade-in-up" style="animation-delay: 0.1s;">
               AiScReam？
             </p>
-            <p class="text-xl md:text-2xl font-serif text-[#6B6B6B] leading-relaxed pl-4 animate-fade-in-up" style="animation-delay: 0.2s;">
+            <p class="text-lg sm:text-xl md:text-2xl font-serif text-[#6B6B6B] leading-relaxed pl-0 md:pl-4 animate-fade-in-up" style="animation-delay: 0.2s;">
               爱❤尖叫？
             </p>
-            <p class="text-lg md:text-xl font-serif text-[#9B9B9B] leading-relaxed pl-8 animate-fade-in-up" style="animation-delay: 0.3s;">
+            <p class="text-base sm:text-lg md:text-xl font-serif text-[#9B9B9B] leading-relaxed pl-0 md:pl-8 animate-fade-in-up" style="animation-delay: 0.3s;">
               ice-scream？
             </p>
           </div>
 
           {/* 分割线 - 不规则长度 */}
-          <div class="py-4">
-            <div class="w-24 h-px bg-[#E8E8E8] animate-line-expand" style="animation-delay: 0.4s;"></div>
+          <div class="py-2 md:py-4 flex justify-center md:justify-start">
+            <div class="w-16 md:w-24 h-px bg-[#E8E8E8] animate-line-expand" style="animation-delay: 0.4s;"></div>
           </div>
 
           {/* 第二组：解释 */}
-          <div class="space-y-3 text-[#6B6B6B] leading-relaxed reveal" style="animation-delay: 0.5s;">
+          <div class="space-y-2 md:space-y-3 text-[#6B6B6B] leading-relaxed reveal" style="animation-delay: 0.5s;">
             <p>不是冰淇淋。</p>
             <p>也不是爱尖叫。</p>
           </div>
 
           {/* 第三组：态度 */}
-          <div class="space-y-3 pt-4">
-            <p class="text-[#1A1A1A] text-lg reveal" style="animation-delay: 0.6s;">就是一个名字。</p>
-            <p class="text-[#6B6B6B] reveal" style="animation-delay: 0.7s;">我随便起的。</p>
+          <div class="space-y-2 md:space-y-3 pt-2 md:pt-4">
+            <p class="text-[#1A1A1A] text-base md:text-lg reveal" style="animation-delay: 0.6s;">就是一个名字。</p>
+            <p class="text-[#6B6B6B] text-sm md:text-base reveal" style="animation-delay: 0.7s;">我随便起的。</p>
             <p
-              class="text-[#E74C3C] text-lg reveal-left"
-              style="transform: translateX(-10px); animation-delay: 0.8s;"
+              class="text-[#E74C3C] text-base md:text-lg reveal-left inline-block"
+              style="transform: translateX(0); animation-delay: 0.8s;"
             >
               你随便叫。
             </p>
@@ -74,22 +74,22 @@ import { siteConfig } from '../site.config';
         </div>
 
         {/* 底部装饰：社交链接 */}
-        <div class="mt-16 flex flex-wrap gap-4 items-center reveal" style="animation-delay: 0.9s;">
+        <div class="mt-10 md:mt-16 flex flex-wrap gap-3 md:gap-4 items-center justify-center md:justify-start reveal" style="animation-delay: 0.9s;">
           {siteConfig.socialLinks.map((link, index) => (
             <a
               href={link.href}
               target="_blank"
               rel="noopener noreferrer"
-              class="tag-bounce flex items-center gap-2 px-4 py-2 border border-[#E8E8E8] text-[#6B6B6B] hover:text-[#E74C3C] hover:border-[#E74C3C] transition-all duration-300 text-sm"
+              class="tag-bounce flex items-center gap-2 px-3 py-2 md:px-4 md:py-2 border border-[#E8E8E8] text-[#6B6B6B] hover:text-[#E74C3C] hover:border-[#E74C3C] transition-all duration-300 text-xs md:text-sm"
               style={`animation-delay: ${index * 0.1}s;`}
             >
-              <Icon name={link.icon} size={16} />
+              <Icon name={link.icon} size={14} class="md:w-4 md:h-4" />
               <span>{link.name}</span>
             </a>
           ))}
 
-          {/* 装饰点 - 呼吸动画 */}
-          <div class="flex gap-2 ml-auto">
+          {/* 装饰点 - 呼吸动画 - 桌面端显示 */}
+          <div class="hidden md:flex gap-2 ml-auto">
             <span class="w-1 h-1 rounded-full bg-[#E8E8E8] animate-breathe" style="animation-delay: 0s;"></span>
             <span class="w-1 h-1 rounded-full bg-[#9B9B9B] animate-breathe" style="animation-delay: 0.3s;"></span>
             <span class="w-1 h-1 rounded-full bg-[#E74C3C] animate-breathe" style="animation-delay: 0.6s;"></span>

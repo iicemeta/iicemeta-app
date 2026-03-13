@@ -24,23 +24,40 @@ const currentPosts = postsByCategory[currentCategory] || [];
 ---
 
 <BaseLayout title="分类">
-  <div class="max-w-6xl mx-auto">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6">
     {/* 标题 - 入场动画 */}
-    <h1 class="text-4xl md:text-5xl font-serif text-[#1A1A1A] mb-12 animate-fade-in-up">
+    <h1 class="text-3xl sm:text-4xl md:text-5xl font-serif text-[#1A1A1A] mb-8 md:mb-12 animate-fade-in-up">
       分类
     </h1>
 
-    {/* 分类导航 - 错开动画 */}
-    <nav class="mb-12 overflow-x-auto reveal">
-      <ul class="flex gap-2 pb-4 border-b border-[#E8E8E8]">
+    {/* 分类导航 - 响应式：移动端下拉，桌面端横向 */}
+    <nav class="mb-8 md:mb-12 reveal">
+      {/* 移动端：下拉选择 */}
+      <div class="md:hidden">
+        <label for="category-select" class="sr-only">选择分类</label>
+        <select
+          id="category-select"
+          class="w-full px-4 py-3 bg-white border border-[#E8E8E8] rounded-lg text-[#1A1A1A] focus:outline-none focus:border-[#E74C3C] transition-colors appearance-none cursor-pointer"
+          style="background-image: url('data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 fill=%27none%27 viewBox=%270 0 24 24%27 stroke=%27%236B6B6B%27%3E%3Cpath stroke-linecap=%27round%27 stroke-linejoin=%27round%27 stroke-width=%272%27 d=%27M19 9l-7 7-7-7%27/%3E%3C/svg%3E'); background-repeat: no-repeat; background-position: right 1rem center; background-size: 1.5rem;"
+        >
+          {sortedCategories.map((category) => (
+            <option value={category} selected={currentCategory === category}>
+              {category} ({postsByCategory[category].length})
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {/* 桌面端：横向导航 */}
+      <ul class="hidden md:flex gap-2 pb-4 border-b border-[#E8E8E8] overflow-x-auto">
         {sortedCategories.map((category, index) => (
           <li
-            class="animate-fade-in-up"
+            class="animate-fade-in-up flex-shrink-0"
             style={`animation-delay: ${(index + 1) * 0.1}s; animation-fill-mode: both;`}
           >
             <a
               href={`/categories?category=${encodeURIComponent(category)}`}
-              class={`px-6 py-3 text-sm whitespace-nowrap transition-all duration-300 tag-bounce ${
+              class={`px-4 lg:px-6 py-3 text-sm whitespace-nowrap transition-all duration-300 tag-bounce ${
                 currentCategory === category
                   ? 'text-[#E74C3C] border-b-2 border-[#E74C3C] -mb-4 pb-4'
                   : 'text-[#6B6B6B] hover:text-[#1A1A1A]'
@@ -58,7 +75,7 @@ const currentPosts = postsByCategory[currentCategory] || [];
 
     {/* 文章列表 - 滚动触发动画 */}
     <section>
-      <h2 class="text-sm uppercase tracking-widest text-[#6B6B6B] mb-8 reveal">
+      <h2 class="text-xs sm:text-sm uppercase tracking-widest text-[#6B6B6B] mb-6 md:mb-8 reveal">
         {currentCategory} · {currentPosts.length} 篇文章
       </h2>
       <div class="divide-y divide-[#E8E8E8]">
@@ -73,3 +90,13 @@ const currentPosts = postsByCategory[currentCategory] || [];
     </section>
   </div>
 </BaseLayout>
+
+<script>
+  // 移动端下拉选择处理
+  const categorySelect = document.getElementById('category-select');
+  categorySelect?.addEventListener('change', (e) => {
+    const target = e.target as HTMLSelectElement;
+    const category = target.value;
+    window.location.href = `/categories?category=${encodeURIComponent(category)}`;
+  });
+</script>

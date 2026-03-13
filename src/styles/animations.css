@@ -134,7 +134,7 @@
 /* 从左侧滚动进入 */
 .reveal-left {
   opacity: 0;
-  transform: translateX(-30px);
+  transform: translateX(-20px);
   transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
               transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -147,7 +147,7 @@
 /* 从右侧滚动进入 */
 .reveal-right {
   opacity: 0;
-  transform: translateX(30px);
+  transform: translateX(20px);
   transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
               transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -298,94 +298,31 @@
   transform: translateY(-2px) scale(1.05);
 }
 
-/* 导航链接动画 */
-.nav-link {
-  position: relative;
-  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.nav-link::after {
-  content: '';
-  position: absolute;
-  bottom: -4px;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background-color: #E74C3C;
-  transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.nav-link:hover::after {
-  width: 100%;
-}
-
 /* --------------------------------------------
-   特殊效果
+   移动端动画优化
    -------------------------------------------- */
 
-/* 文字渐变动画 */
-.text-gradient-shift {
-  background: linear-gradient(90deg, #1A1A1A 0%, #E74C3C 50%, #1A1A1A 100%);
-  background-size: 200% 100%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: gradientShift 3s ease infinite;
-}
-
-@keyframes gradientShift {
-  0%, 100% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-}
-
-/* 模糊淡入效果 */
-.blur-in {
-  opacity: 0;
-  filter: blur(10px);
-  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
-              filter 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.blur-in.visible {
-  opacity: 1;
-  filter: blur(0);
-}
-
-/* 分隔线渐变 */
-.divider-gradient {
-  height: 1px;
-  background: linear-gradient(90deg, transparent 0%, #E8E8E8 20%, #E8E8E8 80%, transparent 100%);
-}
-
-/* --------------------------------------------
-   性能优化
-   -------------------------------------------- */
-
-/* 启用 GPU 加速 */
-.gpu-accelerate {
-  will-change: transform, opacity;
-  transform: translateZ(0);
-}
-
-/* 减少动画偏好 */
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+@media (max-width: 768px) {
+  /* 减小移动端动画位移，防止溢出 */
+  .reveal {
+    transform: translateY(16px);
   }
   
-  .reveal,
-  .reveal-left,
-  .reveal-right,
-  .reveal-scale {
-    opacity: 1;
+  .reveal-left {
+    transform: translateX(-10px);
+  }
+  
+  .reveal-right {
+    transform: translateX(10px);
+  }
+  
+  /* 禁用一些复杂的悬停动画 */
+  .card-lift:hover {
+    transform: none;
+  }
+  
+  /* 简化标签弹跳 */
+  .tag-bounce:hover {
     transform: none;
   }
 }

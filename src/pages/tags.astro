@@ -23,9 +23,9 @@ const minCount = Math.min(...Object.values(postsByTag).map(p => p.length));
 const getTagSize = (count: number) => {
   if (maxCount === minCount) return 'text-base';
   const ratio = (count - minCount) / (maxCount - minCount);
-  if (ratio > 0.7) return 'text-2xl';
-  if (ratio > 0.4) return 'text-xl';
-  return 'text-base';
+  if (ratio > 0.7) return 'text-xl sm:text-2xl';
+  if (ratio > 0.4) return 'text-lg sm:text-xl';
+  return 'text-sm sm:text-base';
 };
 
 // 获取当前选中的标签
@@ -34,15 +34,15 @@ const currentPosts = postsByTag[currentTag] || [];
 ---
 
 <BaseLayout title="标签">
-  <div class="max-w-6xl mx-auto">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6">
     {/* 标题 - 入场动画 */}
-    <h1 class="text-4xl md:text-5xl font-serif text-[#1A1A1A] mb-12 animate-fade-in-up">
+    <h1 class="text-3xl sm:text-4xl md:text-5xl font-serif text-[#1A1A1A] mb-8 md:mb-12 animate-fade-in-up">
       标签
     </h1>
 
     {/* 标签云 - 错开动画 */}
-    <section class="mb-16 reveal">
-      <div class="flex flex-wrap gap-4 items-baseline">
+    <section class="mb-12 md:mb-16 reveal">
+      <div class="flex flex-wrap gap-3 sm:gap-4 items-baseline">
         {Object.entries(postsByTag)
           .sort((a, b) => b[1].length - a[1].length)
           .map(([tag, tagPosts], index) => (
@@ -51,7 +51,7 @@ const currentPosts = postsByTag[currentTag] || [];
               class={`${getTagSize(tagPosts.length)} font-serif transition-all duration-300 hover:text-[#E74C3C] tag-bounce ${
                 currentTag === tag ? 'text-[#E74C3C]' : 'text-[#6B6B6B]'
               }`}
-              style={`transform: translateY(${index % 3 === 0 ? '0' : index % 3 === 1 ? '8px' : '-4px'}); animation-delay: ${index * 0.05}s;`}
+              style={`transform: translateY(${index % 3 === 0 ? '0' : index % 3 === 1 ? '6px' : '-3px'}); animation-delay: ${index * 0.05}s;`}
             >
               {tag}
               <span class="text-xs ml-1 opacity-60">({tagPosts.length})</span>
@@ -63,7 +63,7 @@ const currentPosts = postsByTag[currentTag] || [];
     {/* 文章列表 - 滚动触发动画 */}
     {currentTag && (
       <section>
-        <h2 class="text-sm uppercase tracking-widest text-[#6B6B6B] mb-8 reveal">
+        <h2 class="text-xs sm:text-sm uppercase tracking-widest text-[#6B6B6B] mb-6 md:mb-8 reveal">
           #{currentTag} · {currentPosts.length} 篇文章
         </h2>
         <div class="divide-y divide-[#E8E8E8]">
@@ -79,3 +79,23 @@ const currentPosts = postsByTag[currentTag] || [];
     )}
   </div>
 </BaseLayout>
+
+<script>
+  // 处理标签切换时的滚动定位
+  document.addEventListener('DOMContentLoaded', () => {
+    // 如果有 hash，滚动到文章列表区域
+    if (window.location.hash) {
+      const articleSection = document.querySelector('section:nth-of-type(2)');
+      if (articleSection) {
+        const headerOffset = 100;
+        const elementPosition = articleSection.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: 'smooth'
+        });
+      }
+    }
+  });
+</script>

@@ -10,11 +10,11 @@
   --color-text-secondary: #6B6B6B;
   --color-accent: #E74C3C;
   --color-border: #E8E8E8;
-  
+
   /* 字体 - 使用系统字体作为回退 */
   --font-serif: "Noto Serif SC", "Source Han Serif SC", "SimSun", serif;
   --font-sans: "Noto Sans SC", "Source Han Sans SC", "Microsoft YaHei", sans-serif;
-  
+
   /* 黄金比例字号 */
   --text-base: 16px;
   --text-lg: 26px;
@@ -22,20 +22,60 @@
   --text-2xl: 68px;
 }
 
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+/* 确保所有直接子元素不会溢出 */
+body > * {
+  max-width: 100%;
+}
+
 body {
   font-family: var(--font-sans);
   background-color: var(--color-bg-primary);
   color: var(--color-text-primary);
+  min-height: 100vh;
 }
 
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-serif);
+  margin: 0;
 }
 
-/* 响应式排版 */
-@media (max-width: 768px) {
+p {
+  margin: 0;
+}
+
+/* 响应式排版 - 更细致的断点 */
+@media (max-width: 640px) {
   html {
     font-size: 14px;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 768px) {
+  html {
+    font-size: 15px;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  html {
+    font-size: 15.5px;
+  }
+}
+
+@media (min-width: 1025px) {
+  html {
+    font-size: 16px;
   }
 }
 
@@ -52,8 +92,15 @@ html {
 
 /* 滚动条样式 */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
+}
+
+@media (min-width: 768px) {
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
 }
 
 ::-webkit-scrollbar-track {
@@ -67,4 +114,56 @@ html {
 
 ::-webkit-scrollbar-thumb:hover {
   background: #6B6B6B;
+}
+
+/* 移动端优化触摸区域 */
+@media (pointer: coarse) {
+  a, button {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* 防止移动端表单缩放 */
+@media (max-width: 768px) {
+  input, select, textarea {
+    font-size: 16px;
+  }
+}
+
+/* 图片响应式 */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* 表格响应式容器 */
+.table-wrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* 长文本自动换行 */
+.break-word {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
+/* 移动端隐藏滚动条但保留功能 */
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* 防止元素溢出 */
+.overflow-fix {
+  max-width: 100%;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
 }

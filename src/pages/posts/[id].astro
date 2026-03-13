@@ -34,35 +34,35 @@ const tocHeadings = headings.filter(h => h.depth === 2 || h.depth === 3);
 ---
 
 <BaseLayout title={title} description={post.data.description}>
-  <div class="flex gap-8 xl:gap-12 max-w-5xl mx-auto">
+  <div class="flex flex-col lg:flex-row gap-8 xl:gap-12 max-w-5xl mx-auto px-4 sm:px-6">
     {/* 文章主体 */}
-    <article class="flex-1 min-w-0">
+    <article class="flex-1 min-w-0 order-2 lg:order-1">
       {/* 文章头部 - 入场动画 */}
-      <header class="mb-12 pb-8 border-b border-[#E8E8E8] animate-fade-in-up">
-        <h1 class="text-3xl md:text-5xl font-serif text-[#1A1A1A] mb-6 leading-tight">
+      <header class="mb-8 md:mb-12 pb-6 md:pb-8 border-b border-[#E8E8E8] animate-fade-in-up">
+        <h1 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-serif text-[#1A1A1A] mb-4 md:mb-6 leading-tight">
           {title}
         </h1>
 
-        <div class="flex flex-wrap items-center gap-4 text-sm text-[#6B6B6B]">
+        <div class="flex flex-wrap items-center gap-2 md:gap-4 text-xs md:text-sm text-[#6B6B6B]">
           <time datetime={date.toISOString()}>{formattedDate}</time>
-          <span class="opacity-50">·</span>
+          <span class="opacity-50 hidden sm:inline">·</span>
           <a href={`/categories?category=${encodeURIComponent(category)}`} class="link-underline hover:text-[#E74C3C] transition-colors">
             {category}
           </a>
           {readingTime && (
             <>
-              <span class="opacity-50">·</span>
+              <span class="opacity-50 hidden sm:inline">·</span>
               <span>{readingTime}</span>
             </>
           )}
         </div>
 
         {tags.length > 0 && (
-          <div class="flex gap-2 flex-wrap mt-6">
+          <div class="flex gap-2 flex-wrap mt-4 md:mt-6">
             {tags.map((tag, index) => (
               <a
                 href={`/tags#${tag}`}
-                class="tag-bounce text-xs px-3 py-1 bg-[#E8E8E8] text-[#6B6B6B] rounded-full hover:bg-[#E74C3C] hover:text-white transition-all duration-300"
+                class="tag-bounce text-xs px-2 py-1 md:px-3 md:py-1 bg-[#E8E8E8] text-[#6B6B6B] rounded-full hover:bg-[#E74C3C] hover:text-white transition-all duration-300"
                 style={`animation-delay: ${index * 0.05}s;`}
               >
                 {tag}
@@ -72,13 +72,48 @@ const tocHeadings = headings.filter(h => h.depth === 2 || h.depth === 3);
         )}
       </header>
 
+      {/* 移动端目录 - 可折叠 */}
+      {tocHeadings.length > 0 && (
+        <div class="lg:hidden mb-8 order-1">
+          <details class="group bg-[#F5F5F5] rounded-lg overflow-hidden">
+            <summary class="flex items-center justify-between px-4 py-3 cursor-pointer list-none">
+              <span class="text-sm font-medium text-[#1A1A1A]">目录</span>
+              <svg
+                class="w-4 h-4 text-[#6B6B6B] transition-transform duration-300 group-open:rotate-180"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </summary>
+            <nav class="px-4 pb-4">
+              <ul class="space-y-2">
+                {tocHeadings.map((heading) => (
+                  <li class={`${heading.depth === 3 ? 'pl-4' : ''}`}>
+                    <a
+                      href={`#${heading.slug}`}
+                      class={`block text-sm transition-all duration-200 hover:text-[#E74C3C] ${
+                        heading.depth === 3 ? 'text-[#9B9B9B]' : 'text-[#6B6B6B]'
+                      }`}
+                    >
+                      {heading.text}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          </details>
+        </div>
+      )}
+
       {/* 文章内容 - 滚动触发动画 */}
-      <div class="prose prose-lg max-w-none prose-headings:font-serif prose-headings:text-[#1A1A1A] prose-p:text-[#1A1A1A] prose-a:text-[#E74C3C] prose-a:no-underline hover:prose-a:underline prose-strong:text-[#1A1A1A] prose-code:text-[#E74C3C] prose-pre:bg-[#F5F5F5] prose-pre:text-[#1A1A1A]">
+      <div class="prose prose-sm sm:prose-base lg:prose-lg max-w-none prose-headings:font-serif prose-headings:text-[#1A1A1A] prose-p:text-[#1A1A1A] prose-a:text-[#E74C3C] prose-a:no-underline hover:prose-a:underline prose-strong:text-[#1A1A1A] prose-code:text-[#E74C3C] prose-pre:bg-[#F5F5F5] prose-pre:text-[#1A1A1A]">
         <Content components={components} />
       </div>
 
       {/* CC 许可证 */}
-      <div class="reveal">
+      <div class="reveal mt-8 md:mt-12">
         <CCLicense
           title={title}
           author={siteConfig.author.name}
@@ -89,7 +124,7 @@ const tocHeadings = headings.filter(h => h.depth === 2 || h.depth === 3);
       </div>
 
       {/* 文章底部导航 */}
-      <footer class="mt-16 pt-8 border-t border-[#E8E8E8] reveal">
+      <footer class="mt-12 md:mt-16 pt-6 md:pt-8 border-t border-[#E8E8E8] reveal">
         <a
           href="/"
           class="inline-flex items-center gap-2 text-[#6B6B6B] hover:text-[#1A1A1A] transition-all duration-300 hover:translate-x-2 group"
@@ -100,12 +135,12 @@ const tocHeadings = headings.filter(h => h.depth === 2 || h.depth === 3);
       </footer>
     </article>
 
-    {/* 右侧目录 */}
+    {/* 桌面端目录 */}
     {tocHeadings.length > 0 && (
-      <aside class="hidden lg:block w-64 flex-shrink-0 reveal-right">
+      <aside class="hidden lg:block w-56 xl:w-64 flex-shrink-0 reveal-right order-1 lg:order-2">
         <div class="sticky top-24">
           <h3 class="text-sm font-medium text-[#1A1A1A] mb-4 tracking-wide">目录</h3>
-          <nav class="toc-nav">
+          <nav class="toc-nav max-h-[calc(100vh-200px)] overflow-y-auto">
             <ul class="space-y-2">
               {tocHeadings.map((heading, index) => (
                 <li class={`${heading.depth === 3 ? 'pl-4' : ''} animate-fade-in`} style={`animation-delay: ${index * 0.05}s;`}>

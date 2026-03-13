@@ -15,15 +15,15 @@ const { hero } = siteConfig;
 ---
 
 <BaseLayout title="首页">
-  <div class="max-w-6xl mx-auto">
+  <div class="w-full max-w-6xl mx-auto">
     {/* 头部介绍 - 入场动画 */}
-    <section class="py-16 md:py-24">
+    <section class="py-8 sm:py-12 md:py-16 lg:py-24">
       {/* 日文装饰文字 - 呼吸动画 */}
-      <p class="text-sm text-[#9B9B9B] tracking-widest mb-6 font-serif animate-breathe animate-fade-in">
+      <p class="text-xs sm:text-sm text-[#9B9B9B] tracking-widest mb-3 sm:mb-4 md:mb-6 font-serif animate-breathe animate-fade-in">
         {hero.greeting}
       </p>
       {/* 主标题 - 逐行淡入 */}
-      <h1 class="text-4xl md:text-6xl font-serif text-[#1A1A1A] mb-6 leading-tight">
+      <h1 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-serif text-[#1A1A1A] mb-3 sm:mb-4 md:mb-6 leading-tight break-words">
         {hero.title.map((line, index) => (
           <span
             class="block animate-fade-in-up"
@@ -35,7 +35,7 @@ const { hero } = siteConfig;
       </h1>
       {/* 副标题 - 延迟淡入 */}
       <p
-        class="text-lg md:text-xl text-[#6B6B6B] max-w-2xl leading-relaxed animate-fade-in-up"
+        class="text-sm sm:text-base md:text-lg lg:text-xl text-[#6B6B6B] max-w-2xl leading-relaxed animate-fade-in-up break-words"
         style="animation-delay: 0.5s; animation-fill-mode: both;"
       >
         {hero.subtitle}
@@ -43,13 +43,13 @@ const { hero } = siteConfig;
     </section>
 
     {/* 分割线 - 展开动画 */}
-    <div class="border-t border-[#E8E8E8] my-8 animate-line-expand" style="animation-delay: 0.7s;"></div>
+    <div class="border-t border-[#E8E8E8] my-4 sm:my-6 md:my-8 animate-line-expand" style="animation-delay: 0.7s;"></div>
 
     {/* 主体内容 */}
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 xl:gap-12">
       {/* 文章列表 - 滚动触发动画 */}
-      <section class="lg:col-span-2">
-        <h2 class="text-sm uppercase tracking-widest text-[#6B6B6B] mb-8 reveal">
+      <section class="lg:col-span-2 min-w-0">
+        <h2 class="text-xs sm:text-sm uppercase tracking-widest text-[#6B6B6B] mb-4 sm:mb-6 md:mb-8 reveal">
           最新文章
         </h2>
         <div class="divide-y divide-[#E8E8E8]">
@@ -62,17 +62,17 @@ const { hero } = siteConfig;
       </section>
 
       {/* 侧边栏 - 从右侧滑入 */}
-      <aside class="space-y-12">
+      <aside class="space-y-6 lg:space-y-8 xl:space-y-12 mt-6 lg:mt-0 min-w-0">
         {/* 标签云 */}
         <section class="reveal-right">
-          <h3 class="text-sm uppercase tracking-widest text-[#6B6B6B] mb-6">
+          <h3 class="text-xs sm:text-sm uppercase tracking-widest text-[#6B6B6B] mb-3 sm:mb-4 md:mb-6">
             标签
           </h3>
           <div class="flex flex-wrap gap-2">
             {allTags.map((tag, index) => (
               <a
                 href={`/tags#${tag}`}
-                class="tag-bounce text-sm px-4 py-2 border border-[#E8E8E8] text-[#6B6B6B] hover:text-[#1A1A1A] hover:border-[#1A1A1A] transition-all duration-300"
+                class="tag-bounce text-xs sm:text-sm px-2.5 py-1 sm:px-3 sm:py-1.5 md:px-4 md:py-2 border border-[#E8E8E8] text-[#6B6B6B] hover:text-[#1A1A1A] hover:border-[#1A1A1A] transition-all duration-300 break-words"
                 style={`transform: translateY(${index % 2 === 0 ? '0' : '4px'}); animation-delay: ${index * 0.05}s;`}
               >
                 {tag}
@@ -81,7 +81,35 @@ const { hero } = siteConfig;
           </div>
         </section>
 
-
+        {/* 移动端：添加更多内容的占位区域 */}
+        <section class="lg:hidden reveal">
+          <h3 class="text-xs sm:text-sm uppercase tracking-widest text-[#6B6B6B] mb-3 sm:mb-4">
+            探索
+          </h3>
+          <div class="flex flex-col gap-2 sm:gap-3">
+            <a
+              href="/archive"
+              class="flex items-center justify-between px-3 py-2.5 sm:px-4 sm:py-3 border border-[#E8E8E8] text-[#6B6B6B] hover:text-[#1A1A1A] hover:border-[#1A1A1A] transition-all duration-300"
+            >
+              <span class="text-sm">归档</span>
+              <span class="text-xs opacity-60">查看全部文章</span>
+            </a>
+            <a
+              href="/categories"
+              class="flex items-center justify-between px-3 py-2.5 sm:px-4 sm:py-3 border border-[#E8E8E8] text-[#6B6B6B] hover:text-[#1A1A1A] hover:border-[#1A1A1A] transition-all duration-300"
+            >
+              <span class="text-sm">分类</span>
+              <span class="text-xs opacity-60">按主题浏览</span>
+            </a>
+            <a
+              href="/about"
+              class="flex items-center justify-between px-3 py-2.5 sm:px-4 sm:py-3 border border-[#E8E8E8] text-[#6B6B6B] hover:text-[#1A1A1A] hover:border-[#1A1A1A] transition-all duration-300"
+            >
+              <span class="text-sm">关于</span>
+              <span class="text-xs opacity-60">了解更多</span>
+            </a>
+          </div>
+        </section>
       </aside>
     </div>
   </div>
