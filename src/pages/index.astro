@@ -2,27 +2,47 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PostCard from '../components/PostCard.astro';
 import { getCollection } from 'astro:content';
+import { siteConfig } from '../site.config';
 
 const posts = await getCollection('posts');
 const sortedPosts = posts.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 
 // 获取所有标签
 const allTags = [...new Set(posts.flatMap(post => post.data.tags))];
+
+// Hero 配置
+const { hero } = siteConfig;
 ---
 
 <BaseLayout title="首页">
   <div class="max-w-6xl mx-auto">
     {/* 头部介绍 */}
     <section class="py-16 md:py-24">
-      <h1 class="text-4xl md:text-6xl font-serif text-[#1A1A1A] mb-6">
-        留白之处
+      {/* 日文装饰文字 */}
+      <p class="text-sm text-[#9B9B9B] tracking-widest mb-6 font-serif">
+        {hero.greeting}
+      </p>
+      <h1 class="text-4xl md:text-6xl font-serif text-[#1A1A1A] mb-6 leading-tight">
+        {hero.title.map((line, index) => (
+          <>
+            {line}
+            {index < hero.title.length - 1 && <br />}
+          </>
+        ))}
       </h1>
       <p class="text-lg md:text-xl text-[#6B6B6B] max-w-2xl leading-relaxed">
-        一个关于思考、观察与生活的空间。<br/>
-        在这里，空白不是缺失，而是存在的一种形式。
+        {hero.subtitle}
       </p>
     </section>
-    
+
+    {/* 分割线 */}
+    <div class="border-t border-[#E8E8E8] my-8"></div>
+
+    {/* 最新文章标题 */}
+    <p class="text-xs text-[#9B9B9B] tracking-[0.3em] uppercase mb-8">
+      最新文章
+    </p>
+
     {/* 主体内容 */}
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
       {/* 文章列表 */}

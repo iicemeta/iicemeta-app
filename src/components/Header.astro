@@ -17,10 +17,10 @@ const currentPath = Astro.url.pathname;
     </a>
     
     <!-- 导航链接 -->
-    <ul class="flex gap-8">
+    <ul class="flex gap-12">
       {navbar.items.map(item => (
         <li>
-          <a 
+          <a
             href={item.to}
             class="text-sm tracking-wide transition-all duration-300 hover:translate-x-1 inline-block"
             style={`

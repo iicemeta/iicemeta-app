@@ -65,6 +65,16 @@ export const siteConfig = {
     enabled: true,
   },
 
+  // Hero 区域配置
+  hero: {
+    // 日文装饰文字
+    greeting: 'ようこそ',
+    // 主标题（支持换行，用数组表示每一行）
+    title: ['在留白中', '寻找文字的温度'],
+    // 副标题/描述
+    subtitle: '记录技术、生活与思考。相信简单的力量，追求本质的美。',
+  },
+
   // 主题配置
   theme: {
     // 颜色主题
