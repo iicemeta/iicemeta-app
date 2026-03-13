@@ -1,0 +1,110 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { Icon } from 'astro-icon/components';
+import { siteConfig } from '../site.config';
+---
+
+<BaseLayout title="关于" description={`关于 ${siteConfig.author.name}`}>
+  <div class="max-w-4xl mx-auto min-h-[60vh] flex items-center">
+    {/* 错落布局容器 */}
+    <div class="grid grid-cols-12 gap-8 w-full">
+      
+      {/* 左侧：头像区域 - 偏上错位 */}
+      <div class="col-span-12 md:col-span-5 flex flex-col items-center md:items-start md:pt-12">
+        {/* 头像容器 - 带微旋转和阴影 */}
+        <div 
+          class="relative w-40 h-40 md:w-48 md:h-48 rounded-full overflow-hidden shadow-2xl"
+          style="transform: rotate(-3deg);"
+        >
+          {/* 使用 Picsum 占位图，你可以替换为真实头像 */}
+          <img 
+            src="https://picsum.photos/seed/iicemeta/400/400" 
+            alt={siteConfig.author.name}
+            class="w-full h-full object-cover"
+            style="transform: rotate(3deg) scale(1.1);"
+          />
+        </div>
+        
+        {/* 头像下方的装饰线 */}
+        <div 
+          class="mt-8 w-16 h-px bg-[#E74C3C] opacity-60"
+          style="transform: translateX(20px);"
+        ></div>
+      </div>
+
+      {/* 右侧：文字内容 - 偏下错位 */}
+      <div class="col-span-12 md:col-span-7 md:pt-24">
+        {/* 主文案区域 */}
+        <div class="space-y-6">
+          {/* 第一组：ID 玩梗 */}
+          <div class="space-y-2">
+            <p class="text-2xl md:text-3xl font-serif text-[#1A1A1A] leading-relaxed">
+              AiScReam？
+            </p>
+            <p class="text-xl md:text-2xl font-serif text-[#6B6B6B] leading-relaxed pl-4">
+              爱❤尖叫？
+            </p>
+            <p class="text-lg md:text-xl font-serif text-[#9B9B9B] leading-relaxed pl-8">
+              ice-scream？
+            </p>
+          </div>
+
+          {/* 分割线 - 不规则长度 */}
+          <div class="py-4">
+            <div class="w-24 h-px bg-[#E8E8E8]"></div>
+          </div>
+
+          {/* 第二组：解释 */}
+          <div class="space-y-3 text-[#6B6B6B] leading-relaxed">
+            <p>不是冰淇淋。</p>
+            <p>也不是爱尖叫。</p>
+          </div>
+
+          {/* 第三组：态度 */}
+          <div class="space-y-3 pt-4">
+            <p class="text-[#1A1A1A] text-lg">就是一个名字。</p>
+            <p class="text-[#6B6B6B]">我随便起的。</p>
+            <p 
+              class="text-[#E74C3C] text-lg"
+              style="transform: translateX(-10px);"
+            >
+              你随便叫。
+            </p>
+          </div>
+        </div>
+
+        {/* 底部装饰：社交链接 */}
+        <div class="mt-16 flex flex-wrap gap-4 items-center">
+          {siteConfig.footer.socialLinks.map((link) => (
+            <a 
+              href={link.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="flex items-center gap-2 px-4 py-2 border border-[#E8E8E8] text-[#6B6B6B] hover:text-[#E74C3C] hover:border-[#E74C3C] transition-all duration-300 text-sm"
+            >
+              <Icon name={link.icon} size={16} />
+              <span>{link.name}</span>
+            </a>
+          ))}
+          
+          {/* 装饰点 */}
+          <div class="flex gap-2 ml-auto">
+            <span class="w-1 h-1 rounded-full bg-[#E8E8E8]"></span>
+            <span class="w-1 h-1 rounded-full bg-[#9B9B9B]"></span>
+            <span class="w-1 h-1 rounded-full bg-[#E74C3C]"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {/* 页面角落装饰文字 */}
+  <div 
+    class="fixed bottom-8 right-8 text-xs text-[#E8E8E8] font-serif pointer-events-none hidden md:block"
+    style="writing-mode: vertical-rl;"
+  >
+    about · 关于
+  </div>
+</BaseLayout>
+
+

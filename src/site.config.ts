@@ -37,6 +37,7 @@ export const siteConfig = {
       { to: '/categories', label: '分类', position: 'left' },
       { to: '/tags', label: '标签', position: 'left' },
       { to: '/archive', label: '归档', position: 'left' },
+      { to: '/about', label: '关于', position: 'left' },
     ],
   },
 
