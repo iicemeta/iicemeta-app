@@ -26,12 +26,10 @@ const currentPosts = postsByCategory[currentCategory] || [];
 <BaseLayout title="分类">
   <div class="max-w-6xl mx-auto px-4 sm:px-6">
     {/* 标题 - 入场动画 */}
-    <h1 class="text-3xl sm:text-4xl md:text-5xl font-serif text-[#1A1A1A] mb-8 md:mb-12 animate-fade-in-up">
-      分类
-    </h1>
+    <h1 class="text-3xl sm:text-4xl md:text-5xl font-serif text-[#1A1A1A] mb-20 md:mb-24 animate-fade-in-up">分类</h1>
 
     {/* 分类导航 - 响应式：移动端下拉，桌面端横向 */}
-    <nav class="mb-8 md:mb-12 reveal">
+    <nav class="mt-4 md:mt-6 mb-12 md:mb-16 reveal">
       {/* 移动端：下拉选择 */}
       <div class="md:hidden">
         <label for="category-select" class="sr-only">选择分类</label>
@@ -49,7 +47,7 @@ const currentPosts = postsByCategory[currentCategory] || [];
       </div>
 
       {/* 桌面端：横向导航 */}
-      <ul class="hidden md:flex gap-2 pb-4 border-b border-[#E8E8E8] overflow-x-auto">
+      <ul class="hidden md:flex gap-2 pb-4 border-b border-[#E8E8E8] overflow-x-auto scrollbar-hide">
         {sortedCategories.map((category, index) => (
           <li
             class="animate-fade-in-up flex-shrink-0"

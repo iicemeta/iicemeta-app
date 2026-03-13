@@ -36,12 +36,12 @@ const currentPosts = postsByTag[currentTag] || [];
 <BaseLayout title="标签">
   <div class="max-w-6xl mx-auto px-4 sm:px-6">
     {/* 标题 - 入场动画 */}
-    <h1 class="text-3xl sm:text-4xl md:text-5xl font-serif text-[#1A1A1A] mb-8 md:mb-12 animate-fade-in-up">
+    <h1 class="text-3xl sm:text-4xl md:text-5xl font-serif text-[#1A1A1A] mb-20 md:mb-24 animate-fade-in-up">
       标签
     </h1>
 
     {/* 标签云 - 错开动画 */}
-    <section class="mb-12 md:mb-16 reveal">
+    <section class="mt-4 md:mt-6 mb-16 md:mb-20 reveal">
       <div class="flex flex-wrap gap-3 sm:gap-4 items-baseline">
         {Object.entries(postsByTag)
           .sort((a, b) => b[1].length - a[1].length)
