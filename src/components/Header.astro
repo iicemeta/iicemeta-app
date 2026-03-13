@@ -5,24 +5,27 @@ const { navbar, theme } = siteConfig;
 const currentPath = Astro.url.pathname;
 ---
 
-<header class="py-8 px-6 md:px-12">
+<header class="py-8 px-6 md:px-12 animate-fade-in">
   <nav class="flex justify-between items-center max-w-6xl mx-auto">
-    <!-- Logo/站点标题 -->
-    <a 
-      href="/" 
-      class="text-2xl font-serif hover:text-[#E74C3C] transition-colors duration-300"
+    <!-- Logo/站点标题 - 悬停效果 -->
+    <a
+      href="/"
+      class="text-2xl font-serif hover:text-[#E74C3C] transition-all duration-300 hover:scale-105 inline-block"
       style={`color: ${theme.colors.text}`}
     >
       {navbar.title}
     </a>
-    
+
     <!-- 导航链接 -->
     <ul class="flex gap-12">
-      {navbar.items.map(item => (
-        <li>
+      {navbar.items.map((item, index) => (
+        <li
+          class="animate-fade-in-up"
+          style={`animation-delay: ${(index + 1) * 0.1}s; animation-fill-mode: both;`}
+        >
           <a
             href={item.to}
-            class="text-sm tracking-wide transition-all duration-300 hover:translate-x-1 inline-block"
+            class="nav-link text-sm tracking-wide inline-block"
             style={`
               color: ${currentPath === item.to ? theme.colors.primary : theme.colors.textMuted};
             `}

@@ -10,7 +10,7 @@ const postsByYearMonth = posts.reduce((acc, post) => {
   const year = date.getFullYear();
   const month = date.getMonth() + 1;
   const key = `${year}-${month.toString().padStart(2, '0')}`;
-  
+
   if (!acc[key]) {
     acc[key] = { year, month, posts: [] };
   }
@@ -24,24 +24,28 @@ const sortedKeys = Object.keys(postsByYearMonth).sort().reverse();
 
 <BaseLayout title="归档">
   <div class="max-w-4xl mx-auto">
-    <h1 class="text-4xl md:text-5xl font-serif text-[#1A1A1A] mb-12">
+    {/* 标题 - 入场动画 */}
+    <h1 class="text-4xl md:text-5xl font-serif text-[#1A1A1A] mb-12 animate-fade-in-up">
       归档
     </h1>
-    
+
     {/* 时间轴 */}
     <div class="relative">
-      {/* 时间轴线 */}
-      <div class="absolute left-0 md:left-4 top-0 bottom-0 w-px bg-[#E8E8E8]"></div>
-      
-      {sortedKeys.map(key => {
+      {/* 时间轴线 - 展开动画 */}
+      <div class="absolute left-0 md:left-4 top-0 bottom-0 w-px bg-[#E8E8E8] animate-line-expand" style="transform-origin: top; animation-duration: 1s;"></div>
+
+      {sortedKeys.map((key, yearIndex) => {
         const { year, month, posts: monthPosts } = postsByYearMonth[key];
         const sortedPosts = monthPosts.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
-        
+
         return (
-          <section class="relative pl-8 md:pl-16 pb-12">
-            {/* 时间节点 */}
-            <div class="absolute left-0 md:left-4 top-2 w-2 h-2 -translate-x-1/2 rounded-full bg-[#E74C3C]"></div>
-            
+          <section class="relative pl-8 md:pl-16 pb-12 reveal">
+            {/* 时间节点 - 缩放进入 */}
+            <div
+              class="absolute left-0 md:left-4 top-2 w-2 h-2 -translate-x-1/2 rounded-full bg-[#E74C3C] reveal-scale"
+              style={`animation-delay: ${yearIndex * 0.1}s;`}
+            ></div>
+
             {/* 月份标题 */}
             <h2 class="text-2xl font-serif text-[#1A1A1A] mb-6">
               {year}年{month}月
@@ -49,19 +53,22 @@ const sortedKeys = Object.keys(postsByYearMonth).sort().reverse();
                 ({sortedPosts.length} 篇)
               </span>
             </h2>
-            
+
             {/* 文章列表 */}
             <ul class="space-y-4">
-              {sortedPosts.map(post => (
-                <li>
-                  <a 
+              {sortedPosts.map((post, postIndex) => (
+                <li
+                  class="reveal-left"
+                  style={`animation-delay: ${postIndex * 0.05}s;`}
+                >
+                  <a
                     href={`/posts/${post.id}`}
                     class="group flex items-baseline gap-4 text-[#6B6B6B] hover:text-[#1A1A1A] transition-all duration-300"
                   >
-                    <time class="text-sm whitespace-nowrap">
+                    <time class="text-sm whitespace-nowrap opacity-60">
                       {post.data.date.toLocaleDateString('zh-CN', { month: '2-digit', day: '2-digit' })}
                     </time>
-                    <span class="group-hover:translate-x-1 transition-transform duration-300">
+                    <span class="link-underline group-hover:translate-x-2 transition-transform duration-300">
                       {post.data.title}
                     </span>
                   </a>

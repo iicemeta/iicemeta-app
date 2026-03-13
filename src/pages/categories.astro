@@ -25,18 +25,22 @@ const currentPosts = postsByCategory[currentCategory] || [];
 
 <BaseLayout title="分类">
   <div class="max-w-6xl mx-auto">
-    <h1 class="text-4xl md:text-5xl font-serif text-[#1A1A1A] mb-12">
+    {/* 标题 - 入场动画 */}
+    <h1 class="text-4xl md:text-5xl font-serif text-[#1A1A1A] mb-12 animate-fade-in-up">
       分类
     </h1>
-    
-    {/* 分类导航 */}
-    <nav class="mb-12 overflow-x-auto">
+
+    {/* 分类导航 - 错开动画 */}
+    <nav class="mb-12 overflow-x-auto reveal">
       <ul class="flex gap-2 pb-4 border-b border-[#E8E8E8]">
-        {sortedCategories.map(category => (
-          <li>
-            <a 
+        {sortedCategories.map((category, index) => (
+          <li
+            class="animate-fade-in-up"
+            style={`animation-delay: ${(index + 1) * 0.1}s; animation-fill-mode: both;`}
+          >
+            <a
               href={`/categories?category=${encodeURIComponent(category)}`}
-              class={`px-6 py-3 text-sm whitespace-nowrap transition-all duration-300 ${
+              class={`px-6 py-3 text-sm whitespace-nowrap transition-all duration-300 tag-bounce ${
                 currentCategory === category
                   ? 'text-[#E74C3C] border-b-2 border-[#E74C3C] -mb-4 pb-4'
                   : 'text-[#6B6B6B] hover:text-[#1A1A1A]'
@@ -51,17 +55,19 @@ const currentPosts = postsByCategory[currentCategory] || [];
         ))}
       </ul>
     </nav>
-    
-    {/* 文章列表 */}
+
+    {/* 文章列表 - 滚动触发动画 */}
     <section>
-      <h2 class="text-sm uppercase tracking-widest text-[#6B6B6B] mb-8">
+      <h2 class="text-sm uppercase tracking-widest text-[#6B6B6B] mb-8 reveal">
         {currentCategory} · {currentPosts.length} 篇文章
       </h2>
       <div class="divide-y divide-[#E8E8E8]">
         {currentPosts
           .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
-          .map(post => (
-            <PostCard post={post} />
+          .map((post, index) => (
+            <div class={`reveal reveal-delay-${Math.min(index + 1, 5)}`}>
+              <PostCard post={post} />
+            </div>
           ))}
       </div>
     </section>

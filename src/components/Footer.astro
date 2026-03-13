@@ -6,8 +6,8 @@ const { footer, theme, socialLinks } = siteConfig;
 ---
 
 {footer.enabled && (
-  <footer 
-    class="py-12 px-6 md:px-12 border-t"
+  <footer
+    class="py-12 px-6 md:px-12 border-t reveal"
     style={`border-color: ${theme.colors.border}`}
   >
     <div class="max-w-6xl mx-auto">
@@ -15,8 +15,8 @@ const { footer, theme, socialLinks } = siteConfig;
       {footer.links && footer.links.length > 0 && (
         <div class="flex flex-wrap justify-center gap-12 mb-8">
           {footer.links.map(group => (
-            <div>
-              <h4 
+            <div class="reveal-scale reveal-delay-1">
+              <h4
                 class="text-sm font-medium mb-4"
                 style={`color: ${theme.colors.text}`}
               >
@@ -25,9 +25,9 @@ const { footer, theme, socialLinks } = siteConfig;
               <ul class="space-y-2">
                 {group.items.map(link => (
                   <li>
-                    <a 
+                    <a
                       href={link.href}
-                      class="text-sm transition-colors duration-300"
+                      class="text-sm link-underline transition-colors duration-300"
                       style={`color: ${theme.colors.textMuted}`}
                       onmouseenter={`this.style.color='${theme.colors.primary}'`}
                       onmouseleave={`this.style.color='${theme.colors.textMuted}'`}
@@ -41,17 +41,17 @@ const { footer, theme, socialLinks } = siteConfig;
           ))}
         </div>
       )}
-      
+
       <!-- 社交图标 -->
       {socialLinks && socialLinks.length > 0 && (
-        <div class="flex justify-center gap-4 mb-6">
-          {socialLinks.map(link => (
+        <div class="flex justify-center gap-4 mb-6 reveal-scale reveal-delay-2">
+          {socialLinks.map((link, index) => (
             <a
               href={link.href}
               target="_blank"
               rel="noopener noreferrer"
-              class="p-2 rounded-lg transition-all duration-300 hover:scale-110"
-              style={`color: ${theme.colors.textMuted}`}
+              class="tag-bounce p-2 rounded-lg transition-all duration-300 hover:scale-110"
+              style={`color: ${theme.colors.textMuted}; animation-delay: ${index * 0.1}s;`}
               onmouseenter={`this.style.color='${theme.colors.primary}'`}
               onmouseleave={`this.style.color='${theme.colors.textMuted}'`}
               aria-label={link.name}
@@ -61,10 +61,10 @@ const { footer, theme, socialLinks } = siteConfig;
           ))}
         </div>
       )}
-      
+
       <!-- 版权信息 -->
-      <div class="text-center">
-        <p 
+      <div class="text-center reveal-scale reveal-delay-3">
+        <p
           class="text-sm"
           style={`color: ${theme.colors.textMuted}`}
         >
