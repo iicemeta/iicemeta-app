@@ -1,0 +1,88 @@
+/**
+ * 站点全局配置文件
+ * 类似 Docusaurus 的 docusaurus.config.js
+ * 集中管理站点信息、导航、页脚等配置
+ */
+
+export const siteConfig = {
+  // 站点基本信息
+  title: 'AiScReam',
+  description: '一个关于留白与思考的空间',
+  tagline: '留白之处，自有天地',
+  url: 'https://www.iicemeta.com',
+  baseUrl: '/',
+  favicon: '/favicon.svg',
+  language: 'zh-CN',
+
+  // 作者信息
+  author: {
+    name: 'iicemeta',
+    email: 'me@iicemeta.com',
+    github: 'https://github.com/iicemeta',
+    twitter: 'https://x.com/iicemeta',
+  },
+
+  // 导航配置
+  navbar: {
+    // 站点 Logo/标题
+    title: 'AiScReam',
+    // Logo 图片（可选）
+    logo: {
+      alt: 'AiScReam',
+      src: '',
+    },
+    // 导航项
+    items: [
+      { to: '/', label: '首页', position: 'left' },
+      { to: '/categories', label: '分类', position: 'left' },
+      { to: '/tags', label: '标签', position: 'left' },
+      { to: '/archive', label: '归档', position: 'left' },
+    ],
+  },
+
+  // 页脚配置
+  footer: {
+    // 版权信息
+    copyright: `© ${new Date().getFullYear()} · 留白之处，自有天地`,
+    // 页脚链接分组（可选）
+    links: [
+      // 示例：添加社交链接
+      // {
+      //   title: '社交',
+      //   items: [
+      //     { label: 'GitHub', href: 'https://github.com' },
+      //     { label: 'Twitter', href: 'https://twitter.com' },
+      //   ],
+      // },
+    ],
+    // 社交图标链接配置
+    socialLinks: [
+      { name: 'GitHub', href: 'https://github.com/iicemeta', icon: 'simple-icons:github' },
+      { name: 'Twitter', href: 'https://x.com/iicemeta', icon: 'simple-icons:x' },
+      { name: 'Email', href: 'mailto:me@iicemeta.com', icon: 'simple-icons:gmail' },
+    ],
+    // 是否显示页脚
+    enabled: true,
+  },
+
+  // 主题配置
+  theme: {
+    // 颜色主题
+    colors: {
+      primary: '#E74C3C',
+      text: '#1A1A1A',
+      textMuted: '#6B6B6B',
+      background: '#FAF9F6',
+      border: '#E8E8E8',
+    },
+    // 字体
+    fonts: {
+      sans: 'Noto Sans SC',
+      serif: 'Noto Serif SC',
+    },
+  },
+} as const;
+
+// 类型导出，方便在其他文件中使用
+type SiteConfig = typeof siteConfig;
+export type { SiteConfig };
