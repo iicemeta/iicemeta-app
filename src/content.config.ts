@@ -1,6 +1,6 @@
 import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
-import { photosCollection } from './src/content/photos/config';
+import { photosCollection } from './content/photos/config';
 
 const postsCollection = defineCollection({
   // 支持两种模式：
