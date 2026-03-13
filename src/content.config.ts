@@ -2,7 +2,13 @@ import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
 
 const postsCollection = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/posts' }),
+  // 支持两种模式：
+  // 1. 直接放在 posts 目录下的 .md 文件
+  // 2. 文件夹内的 index.md（如 how-to-say-thank-you/index.md）
+  loader: glob({ 
+    pattern: ['*.md', '**/index.md'], 
+    base: './src/content/posts' 
+  }),
   schema: z.object({
     title: z.string(),
     date: z.date(),

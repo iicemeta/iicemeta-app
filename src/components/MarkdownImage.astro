@@ -1,0 +1,50 @@
+---
+// Markdown 图片组件 - 实现 Page Bundle 功能
+// 支持相对路径引用同文件夹内的图片资源
+
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  src: string;
+  alt: string;
+}
+
+const { src, alt } = Astro.props;
+
+// 判断是否为相对路径（不是 http/https 开头，也不是绝对路径 / 开头）
+const isRelativePath = !src.startsWith('http') && !src.startsWith('/');
+
+// 获取当前文章路径
+const currentPath = Astro.url.pathname;
+const postId = currentPath.replace('/posts/', '');
+
+// 构建图片的导入路径
+// 对于文件夹文章 how-to-say-thank-you/index.md
+// 相对路径 img1.jpg 应该解析为 /src/content/posts/how-to-say-thank-you/img1.jpg
+let imageSrc: string | ImageMetadata = src;
+let imagePath = '';
+
+if (isRelativePath && postId) {
+  // 使用绝对路径引用 src/content/posts 下的资源
+  imagePath = `/src/content/posts/${postId}/${src}`;
+} else {
+  imagePath = src;
+}
+---
+
+{isRelativePath && postId ? (
+  <img 
+    src={imagePath} 
+    alt={alt} 
+    loading="lazy" 
+    class="rounded-lg shadow-md max-w-full h-auto my-4"
+  />
+) : (
+  <img 
+    src={src} 
+    alt={alt} 
+    loading="lazy" 
+    class="rounded-lg shadow-md max-w-full h-auto my-4"
+  />
+)}

@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection, render } from 'astro:content';
+import MarkdownImage from '../../components/MarkdownImage.astro';
 
 export async function getStaticPaths() {
   const posts = await getCollection('posts');
@@ -14,6 +15,11 @@ const { post } = Astro.props;
 const { Content } = await render(post);
 
 const { title, date, category, tags, readingTime } = post.data;
+
+// 自定义组件映射，用于处理 Markdown 中的元素
+const components = {
+  img: MarkdownImage,
+};
 
 const formattedDate = date.toLocaleDateString('zh-CN', {
   year: 'numeric',
@@ -60,7 +66,7 @@ const formattedDate = date.toLocaleDateString('zh-CN', {
     
     {/* 文章内容 */}
     <div class="prose prose-lg max-w-none prose-headings:font-serif prose-headings:text-[#1A1A1A] prose-p:text-[#1A1A1A] prose-a:text-[#E74C3C] prose-a:no-underline hover:prose-a:underline prose-strong:text-[#1A1A1A] prose-code:text-[#E74C3C] prose-pre:bg-[#F5F5F5] prose-pre:text-[#1A1A1A]">
-      <Content />
+      <Content components={components} />
     </div>
     
     {/* 文章底部导航 */}
